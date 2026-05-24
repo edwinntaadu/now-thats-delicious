@@ -1,7 +1,14 @@
 const express = require("express");
-const cors = require("cors");
+//const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
+const session = require("express-session");
+const flash = require("connect-flash");
+const MongoStore = require("connect-mongo").default;
+const helpers = require("./helpers");
+
 const connectDB = require("./config/db");
+require("./models/Store");
 const routes = require("./routes/index");
 
 dotenv.config();
@@ -11,11 +18,47 @@ connectDB();
 // create our Express app
 const app = express();
 
-app.use(cors());
+// view engine setup
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+// serves up static files from the public folder. Anything in public/ will just be served up as the file it is
+app.use(express.static(path.join(__dirname, "public")));
+
+//app.use(cors());
+
+// Takes the raw requests and turns them into usable properties on req.body
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Sessions allow us to store data on visitors from request to request
+// This keeps users logged in and allows us to send flash messages
+app.use(
+  session({
+    secret: process.env.SECRET,
+    key: process.env.KEY,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.DATABASE,
+    }),
+  }),
+);
+
+// The flash middleware let's us use req.flash('error', 'Shit!'), which will then pass that message to the next page the user requests
+app.use(flash());
+
+// pass variables to our templates + all requests
+app.use((req, res, next) => {
+  res.locals.h = helpers;
+  res.locals.flashes = req.flash();
+  res.locals.user = req.user || null;
+  res.locals.currentPath = req.path;
+  next();
+});
 
 // After allllll that above middleware, we finally handle our own routes!
-app.use(routes);
+app.use("/", routes);
 
 const PORT = process.env.PORT || 4000;
 
