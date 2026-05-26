@@ -6,10 +6,12 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const MongoStore = require("connect-mongo").default;
 const helpers = require("./helpers");
+errorHandlers = require("./handlers/errorHandlers");
 
 const connectDB = require("./config/db");
 require("./models/Store");
 const routes = require("./routes/index");
+const { error } = require("console");
 
 dotenv.config();
 
@@ -45,7 +47,7 @@ app.use(
   }),
 );
 
-// The flash middleware let's us use req.flash('error', 'Shit!'), which will then pass that message to the next page the user requests
+// The flash middleware let's us use req.flash('error', 'Sh!t!'), which will then pass that message to the next page the user requests
 app.use(flash());
 
 // pass variables to our templates + all requests
@@ -59,6 +61,9 @@ app.use((req, res, next) => {
 
 // After allllll that above middleware, we finally handle our own routes!
 app.use("/", routes);
+
+// One of our error handlers will see if these errors are just validation errors
+app.use(errorHandlers.flashValidationErrors);
 
 const PORT = process.env.PORT || 4000;
 
