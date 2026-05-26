@@ -38,7 +38,7 @@ html(lang="en")
                         li.nav__item: a.nav__link(href="/login", class=(currentPath.startsWith('/login') ? 'nav__link--active' : '')) Log In
 
     block messages
-        if locals.flashes
+        if flashes
             .inner
                 .flash-messages
                     - const categories = Object.keys(locals.flashes)
