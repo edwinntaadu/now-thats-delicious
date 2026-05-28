@@ -62,8 +62,14 @@ app.use((req, res, next) => {
 // After allllll that above middleware, we finally handle our own routes!
 app.use("/", routes);
 
+// If that above routes didnt work, we 404 them and forward to error handler
+app.use(errorHandlers.notFound);
+
 // One of our error handlers will see if these errors are just validation errors
 app.use(errorHandlers.flashValidationErrors);
+
+// production error handler
+app.use(errorHandlers.productionErrors);
 
 const PORT = process.env.PORT || 4000;
 

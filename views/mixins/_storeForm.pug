@@ -1,14 +1,66 @@
 mixin storeForm(store = {})
-    form(method="POST" action=`/add/${store._id || ''}` class="card")
-        label(for="name") Name
-        input(type="text" name="name" value=store.name)
-        label(for="description") Description
-        textarea(type= "text" name="description")= store.description
-        - const choices = ["Wifi", "Open Late", "Family Friendly", "Vegetarian", "Licenced"];
-        - const tags = store.tags || [];
-        ul.tags 
-            each choice in choices 
-                .tag.tag__choice
-                    input(type="checkbox" name="tags" id=choice value=choice checked=(tags.includes(choice)))
-                    label(for=choice) #{choice}
-        input(type="submit" value="Save →" class="button")
+  form(method="POST" action=`/add/${store._id || ''}` class="card")
+
+    label(for="name") Name
+    input(
+      type="text"
+      name="name"
+      value=store.name
+    )
+
+    label(for="description") Description
+    textarea(name="description")= store.description
+
+    //- address, lng and lat
+
+    label(for="address") Address
+    input(
+      type="text"
+      id="address"
+      name="location[address]"
+      value=(store.location && store.location.address)
+    )
+
+    input(
+      type="hidden"
+      name="location[type]"
+      value="Point"
+    )
+
+    label(for="lng") Address Lng
+    input(
+      type="text"
+      id="lng"
+      name="location[coordinates][0]"
+      value=(store.location && store.location.coordinates && store.location.coordinates[0]) required
+    )
+
+    label(for="lat") Address Lat
+    input(
+      type="text"
+      id="lat"
+      name="location[coordinates][1]"
+      value=(store.location && store.location.coordinates && store.location.coordinates[1]) required
+    )
+
+    - const choices = ["Wifi", "Open Late", "Family Friendly", "Vegetarian", "Licenced"];
+    - const tags = store.tags || [];
+
+    ul.tags
+      each choice in choices
+        .tag.tag__choice
+          input(
+            type="checkbox"
+            name="tags"
+            id=choice
+            value=choice
+            checked=(tags.includes(choice))
+          )
+
+          label(for=choice) #{choice}
+
+    input(
+      type="submit"
+      value="Save →"
+      class="button"
+    )
