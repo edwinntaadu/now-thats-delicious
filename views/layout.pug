@@ -53,5 +53,5 @@ html(lang="en")
         
 
     block scripts
-    script(src=`https://maps.googleapis.com/maps/api/js?key=${process.env.MAP_KEY}&libraries=places`)
     script(src="/dist/App.bundle.js")
+    script(async defer src=`https://maps.googleapis.com/maps/api/js?key=${process.env.MAP_KEY}&loading=async&libraries=places&v=beta&callback=initMapAutocomplete`)
