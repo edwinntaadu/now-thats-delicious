@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
+// const expressValidator = require("express-validator");
 const MongoStore = require("connect-mongo").default;
 const helpers = require("./helpers");
 errorHandlers = require("./handlers/errorHandlers");
@@ -32,6 +33,9 @@ app.use(express.static(path.join(__dirname, "public")));
 // Takes the raw requests and turns them into usable properties on req.body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
+// app.use(expressValidator());
 
 // Sessions allow us to store data on visitors from request to request
 // This keeps users logged in and allows us to send flash messages
