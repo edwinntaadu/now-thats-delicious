@@ -11,6 +11,8 @@ errorHandlers = require("./handlers/errorHandlers");
 
 const connectDB = require("./config/db");
 require("./models/Store");
+require("./models/User");
+require("./handlers/passport");
 const routes = require("./routes/index");
 const { error } = require("console");
 
@@ -61,6 +63,7 @@ app.use((req, res, next) => {
   res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
   next();
+  //console.log(req.flash());
 });
 
 // After allllll that above middleware, we finally handle our own routes!

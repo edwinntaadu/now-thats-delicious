@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const User = mongoose.model("User");
+const promisify = require("es6-promisify");
 const { body, validationResult } = require("express-validator");
 
 exports.loginForm = (req, res) => {
@@ -52,3 +54,9 @@ exports.validateRegister = [
     next(); // there were no errors!
   },
 ];
+
+exports.register = async (req, res, next) => {
+  const user = new User({ email: req.body.email, name: req.body.name });
+  await User.register(user, req.body.password);
+  next(); // pass to authController.login
+};
