@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
 // const expressValidator = require("express-validator");
 const MongoStore = require("connect-mongo").default;
 const helpers = require("./helpers");
@@ -52,6 +53,10 @@ app.use(
     }),
   }),
 );
+
+// Passport JS is what we use to handle our logins
+app.use(passport.initialize());
+app.use(passport.session());
 
 // The flash middleware let's us use req.flash('error', 'Sh!t!'), which will then pass that message to the next page the user requests
 app.use(flash());
