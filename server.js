@@ -1,6 +1,7 @@
 const express = require("express");
 //const cors = require("cors");
 const dotenv = require("dotenv");
+dotenv.config();
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -16,8 +17,6 @@ require("./models/User");
 require("./handlers/passport");
 const routes = require("./routes/index");
 const { error } = require("console");
-
-dotenv.config();
 
 connectDB();
 
