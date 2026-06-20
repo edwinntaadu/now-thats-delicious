@@ -46,6 +46,14 @@ const storeSchema = new mongoose.Schema({
   },
 });
 
+// Define indexes
+storeSchema.index({
+  name: "text",
+  description: "text",
+});
+
+storeSchema.index({ location: "2dsphere" });
+
 storeSchema.pre("save", async function () {
   if (!this.isModified("name")) {
     //next(); // skip it
