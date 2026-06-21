@@ -8,8 +8,27 @@
 }
 
 .popup {
-  width: 300px;
+  max-width: 260px;
+
   img {
     width: 100%;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin: 0 0 6px;
+  }
+
+  &__maps-link {
+    display: inline-block;
+    color: #1a73e8;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  &__maps-link:hover,
+  &__maps-link:focus {
+    text-decoration: underline;
   }
 }

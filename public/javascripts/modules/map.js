@@ -30,11 +30,23 @@ function loadPlaces(map, lat = 43.2, lng = -79.8) {
     // when someone clicks on a marker, show the details of the place
     markers.forEach((marker) =>
       marker.addListener("click", function () {
+        const [lng, lat] = this.place.location.coordinates;
+        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
         const html = `
             <div class="popup">
                 <a href="/stores/${this.place.slug}">
                     <img src="/uploads/${this.place.photo || "store.png"}" alt="${this.place.name}" />
                     <p>${this.place.name} - ${this.place.location.address}</p>
+                </a>
+
+                <a
+                  href="${googleMapsUrl}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="popup__maps-link"
+                >
+                  View on Google Maps
                 </a>
             </div>
         `;
