@@ -12,8 +12,10 @@ const helpers = require("./helpers");
 errorHandlers = require("./handlers/errorHandlers");
 
 const connectDB = require("./config/db");
+
 require("./models/Store");
 require("./models/User");
+require("./models/Review");
 require("./handlers/passport");
 const routes = require("./routes/index");
 const { error } = require("console");
