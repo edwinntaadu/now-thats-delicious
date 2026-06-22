@@ -27,4 +27,11 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
+function autopopulate() {
+  this.populate("author");
+}
+
+reviewSchema.pre("find", autopopulate);
+reviewSchema.pre("findOne", autopopulate);
+
 module.exports = mongoose.model("Review", reviewSchema);
