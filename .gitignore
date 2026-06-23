@@ -13,6 +13,11 @@ npm-debug.log*
 dist/
 build/
 
+# User-uploaded files
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/store.png
+
 # OS files
 .DS_Store
 Thumbs.db
