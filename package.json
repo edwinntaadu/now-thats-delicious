@@ -1,7 +1,7 @@
 {
   "name": "now-thats-delicious",
   "version": "1.0.0",
-  "description": "Restaurant Application",
+  "description": "A full-stack restaurant discovery, review, and mapping application.",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -11,8 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "edwinntaadu",
+  "license": "Apache-2.0",
   "dependencies": {
     "axios": "^1.18.0",
     "connect-flash": "^0.1.1",
