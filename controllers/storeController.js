@@ -3,7 +3,8 @@ const Store = mongoose.model("Store");
 const User = mongoose.model("User");
 const multer = require("multer");
 const { Jimp } = require("jimp");
-const uuid = require("uuid");
+//const uuid = require("uuid");
+const { randomUUID } = require("node:crypto");
 
 const multerOptions = {
   storage: multer.memoryStorage(),
@@ -39,7 +40,8 @@ exports.resize = async (req, res, next) => {
     return;
   }
   const extension = req.file.mimetype.split("/")[1];
-  req.body.photo = `${uuid.v4()}.${extension}`; // generate a unique filename for the photo
+  //req.body.photo = `${uuid.v4()}.${extension}`; // generate a unique filename for the photo
+  req.body.photo = `${randomUUID()}.${extension}`;
   // Now we resize the photo
   const photo = await Jimp.read(req.file.buffer);
   await photo.resize({ w: 800 });
