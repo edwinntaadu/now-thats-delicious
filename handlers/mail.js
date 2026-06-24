@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const pug = require("pug");
-const juice = require("juice").default;
+//const juice = require("juice").default;
 const { convert } = require("html-to-text");
 
 const transport = nodemailer.createTransport({
@@ -12,17 +12,19 @@ const transport = nodemailer.createTransport({
   },
 });
 
-const generateHTML = (filename, options = {}) => {
+const generateHTML = async (filename, options = {}) => {
+  const { default: juice } = await import("juice");
+
   const html = pug.renderFile(
     `${__dirname}/../views/email/${filename}.pug`,
     options,
   );
-  const inlined = juice(html);
-  return inlined;
+
+  return juice(html);
 };
 
 exports.send = async (options) => {
-  const html = generateHTML(options.filename, options);
+  const html = await generateHTML(options.filename, options);
   const text = convert(html);
   const mailOptions = {
     from: `Lil Saint <noreply@lilsaint.com>`,
