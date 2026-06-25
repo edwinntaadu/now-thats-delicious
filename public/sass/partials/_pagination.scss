@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 .pagination {
   display: grid;
   grid-template-columns: minmax(110px, 1fr) auto minmax(110px, 1fr);

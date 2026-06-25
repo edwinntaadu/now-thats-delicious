@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 .ranking-page {
   &__heading {
     margin-bottom: $space-5;

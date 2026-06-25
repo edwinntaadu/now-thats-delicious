@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 .flash-messages {
   display: grid;
   gap: $space-2;
