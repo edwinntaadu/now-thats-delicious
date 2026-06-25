@@ -19,8 +19,8 @@
   &__icon {
     position: absolute;
     left: $space-3;
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     border: 2px solid $color-muted;
     border-radius: 50%;
     pointer-events: none;
@@ -42,7 +42,7 @@
   &__input {
     width: 100%;
     min-height: 44px;
-    padding: $space-2 $space-3 $space-2 4.4rem;
+    padding: $space-2 $space-3 $space-2 5.2rem;
     border: 1px solid transparent;
     border-radius: $radius-input;
     outline: 0;
@@ -84,13 +84,16 @@
     background: $color-surface;
     box-shadow: $shadow-overlay;
 
-    &:empty {
+    &[hidden] {
       display: none;
     }
   }
 
   &__result {
-    display: block;
+    display: flex;
+    gap: $space-1;
+    align-items: flex-start;
+    flex-direction: column;
     padding: $space-3;
     border-bottom: $border-default;
     color: $color-text;
@@ -103,6 +106,28 @@
     &:hover,
     &--active {
       background: rgba($color-accent, 0.16);
+    }
+  }
+
+  &__result-name {
+    color: $color-text;
+    font-size: $font-size-meta;
+  }
+
+  &__result-address {
+    color: $color-muted;
+    font-size: $font-size-label;
+    line-height: 1.4;
+  }
+
+  &__message {
+    padding: $space-3;
+    color: $color-muted;
+    font-size: $font-size-meta;
+    line-height: 1.5;
+
+    &--error {
+      color: $color-error;
     }
   }
 }

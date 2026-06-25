@@ -18,6 +18,8 @@ mixin storeCard(store)
               type="submit"
               name="heart"
               class=heartClass
+              data-store-name=store.name
+              aria-pressed=String(isHearted)
               aria-label=(isHearted ? `Remove ${store.name} from saved stores` : `Save ${store.name}`)
               title=(isHearted ? "Remove from saved stores" : "Save store")
             )

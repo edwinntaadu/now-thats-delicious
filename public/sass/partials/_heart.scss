@@ -31,6 +31,12 @@
       transform: translateY(-1px);
     }
 
+    &:disabled {
+      cursor: wait;
+      opacity: 0.65;
+      transform: none;
+    }
+
     &:after {
       content: "♥";
       position: absolute;
@@ -43,6 +49,21 @@
 
     &--hearted {
       color: $color-error;
+
+      svg {
+        opacity: 0;
+      }
+
+      &:before {
+        content: "♥";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: $color-error;
+        font-size: 2.4rem;
+        line-height: 1;
+      }
     }
 
     &--float:after {

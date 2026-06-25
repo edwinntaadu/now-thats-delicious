@@ -1,65 +1,109 @@
-@keyframes slideIn {
-  0% {
-    transform: translateX(-10px);
-  }
-  50% {
-    transform: translateX(10px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
+.flash-messages {
+  display: grid;
+  gap: $space-2;
+  margin-top: $space-3;
 }
 
 .flash {
-  background: white;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  margin-bottom: 2rem;
-  padding: 2rem;
-  position: relative;
-  z-index: 1;
-  border-radius: 3px;
+  --flash-color: #{$color-info};
   display: flex;
-  animation: slideIn forwards .1s ease-in-out 2;
-  animation-timing-function: cubic-bezier(0.01, 1.68, 0.58, 1);
-  & + .flash {
-    animation-delay: 0.55s;
-    & + .flash {
-      animation-delay: 0.6s;
-    }
+  gap: $space-3;
+  align-items: flex-start;
+  padding: $space-3;
+  border: 1px solid rgba($color-info, 0.28);
+  border-left: 4px solid var(--flash-color);
+  border-radius: $radius-card;
+  background: $color-surface;
+  box-shadow: $shadow-card;
+  color: $color-text;
+
+  &:before {
+    content: "i";
+    display: inline-grid;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--flash-color);
+    color: $color-surface;
+    font-size: $font-size-label;
+    font-weight: 800;
+    line-height: 1;
   }
+
   &__text {
     flex: 1;
-  }
-  &__remove {
-    background: none;
-    border:0;
-    &:hover {
-      color: $yellow;
+    margin: 0;
+    font-size: $font-size-meta;
+    line-height: 1.6;
+
+    a {
+      font-weight: 700;
     }
   }
-  &:after {
-    content: '';
-    display: block;
-    background: white;
-    position: absolute;
-    width: calc(100% - 16px);
-    height: calc(100% - 16px);
-    top: 8px;
-    left: 8px;
-    z-index: -1;
-    box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    border-radius: 3px;
+
+  &__remove {
+    display: inline-grid;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: $color-muted;
+    font-size: 2.2rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      background: $color-background;
+      color: $color-text;
+    }
   }
+
   &--success {
-    background: linear-gradient(135deg, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
+    --flash-color: #{$color-success};
+    border-color: rgba($color-success, 0.3);
+
+    &:before {
+      content: "✓";
+    }
   }
+
   &--error {
-    background: linear-gradient(20deg, rgba(255,0,0,1) 0%, rgba(200,0,0,1) 100%);
+    --flash-color: #{$color-error};
+    border-color: rgba($color-error, 0.3);
+
+    &:before {
+      content: "!";
+    }
   }
+
+  &--warning {
+    --flash-color: #{$color-accent-hover};
+    border-color: rgba($color-accent-hover, 0.35);
+
+    &:before {
+      content: "!";
+      color: $color-text;
+    }
+  }
+
   &--info {
-    background: linear-gradient(35deg, rgba(241,231,103,1) 0%, rgba(254,182,69,1) 100%);
+    --flash-color: #{$color-info};
   }
-  p {
-    margin: 0;
+}
+
+@media all and (max-width: 520px) {
+  .flash {
+    gap: $space-2;
+    padding: $space-2;
+
+    &:before {
+      margin-top: 6px;
+    }
   }
 }

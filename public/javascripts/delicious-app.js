@@ -5,6 +5,7 @@ import autocomplete from "./modules/autocomplete";
 import typeAhead from "./modules/typeAhead";
 import makeMap from "./modules/map";
 import ajaxHeart from "./modules/heart";
+import feedback from "./modules/feedback";
 
 window.initMapAutocomplete = async function () {
   await Promise.allSettled([
@@ -14,6 +15,7 @@ window.initMapAutocomplete = async function () {
 };
 
 typeAhead($(".search"));
+feedback();
 
 const heartForms = $$("form.heart");
 heartForms.on("submit", ajaxHeart);

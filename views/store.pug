@@ -43,6 +43,8 @@ block content
                     type="submit"
                     name="heart"
                     class=(isHearted ? "heart__button--hearted" : "")
+                    data-store-name=store.name
+                    aria-pressed=String(isHearted)
                     aria-label=(isHearted ? `Remove ${store.name} from saved stores` : `Save ${store.name}`)
                     title=(isHearted ? "Remove from saved stores" : "Save store")
                   )

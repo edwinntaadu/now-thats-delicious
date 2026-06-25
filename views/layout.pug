@@ -7,6 +7,9 @@ html(lang="en")
     link(rel='stylesheet', href='/dist/style.css')
     link(rel="shortcut icon" type="image/png" href="/images/icons/doughnut.png")
   body
+    a.skip-link(href="#main-content") Skip to main content
+    #app-status.hide(role="status" aria-live="polite" aria-atomic="true")
+
     block header
       header.top
         nav.nav(aria-label="Primary navigation")
@@ -29,9 +32,17 @@ html(lang="en")
                   placeholder="Search stores"
                   name="search"
                   autocomplete="off"
+                  role="combobox"
                   aria-label="Search stores"
+                  aria-autocomplete="list"
+                  aria-controls="site-search-results"
+                  aria-expanded="false"
                 )
-                .search__results(aria-live="polite")
+                #site-search-results.search__results(
+                  role="listbox"
+                  aria-label="Store search results"
+                  hidden
+                )
 
             .nav__section.nav__section--user
               if user
@@ -50,17 +61,26 @@ html(lang="en")
                 a.nav__link.nav__link--text(href="/login", class=(currentPath.startsWith('/login') ? 'nav__link--active' : '')) Log in
 
     block messages
-        if flashes
-            .inner
-                .flash-messages
-                    - const categories = Object.keys(locals.flashes)
-                    each category in categories
-                        each message in flashes[category]
-                            .flash(class=`flash--${category}`)
-                                p.flash__text!= message
-                                button.flash__remove(onClick="this.parentElement.remove()") &times;
+      if flashes
+        - const categories = Object.keys(locals.flashes)
+        if categories.length
+          .inner
+            .flash-messages(aria-label="Notifications")
+              each category in categories
+                each message in flashes[category]
+                  .flash(
+                    class=`flash--${category}`
+                    role=(category === "error" ? "alert" : "status")
+                  )
+                    p.flash__text!= message
+                    button.flash__remove(
+                      type="button"
+                      aria-label=`Dismiss ${category} message`
+                      data-flash-dismiss
+                    )
+                      span(aria-hidden="true") ×
 
-    .content
+    main#main-content.content(tabindex="-1")
       block content
         
 
