@@ -1,64 +1,265 @@
 .single {
-  &__hero {
-    height: 500px;
-    position: relative;
+  &__overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2vw), 0% 100%);
-    &:before {
-      display: block;
-      content: '';
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0;
-      right: 0;
-      background:
-        linear-gradient(45deg, hsla(190, 95%, 43%, 1) 0%, hsla(190, 95%, 43%, 0) 70%),
-        linear-gradient(135deg, hsla(219, 93%, 48%, 1) 10%, hsla(219, 93%, 48%, 0) 80%),
-        linear-gradient(225deg, hsla(293, 93%, 48%, 1) 10%, hsla(293, 93%, 48%, 0) 80%),
-        linear-gradient(315deg, hsla(130, 96%, 45%, 1) 100%, hsla(130, 96%, 45%, 0) 70%);
-      opacity: 0.6;
-      z-index: 1;
-      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2vw), 0% 100%);
-    }
+    border: $border-default;
+    border-radius: $radius-card;
+    background: $color-surface;
+    box-shadow: $shadow-card;
   }
+
+  &__media {
+    min-height: 440px;
+    background: $color-border;
+  }
+
   &__image {
+    display: block;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
     object-fit: cover;
-    position: absolute;
   }
-  &__details {
-    background: white;
-    // clip-path: polygon(0px 2vw, 100% 0, 100% calc(100% - 2vw), 0% 100%);
-    position: relative;
-    padding: 3rem;
-    margin-top: -10rem;
-    box-shadow: 0 0 10px 2px rgba(0,0,0,0.15);
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    padding: $space-5;
   }
+
+  &__heading {
+    display: flex;
+    gap: $space-3;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    h1 {
+      margin-bottom: $space-2;
+      font-size: $font-size-display;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__heading-copy {
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    margin: 0 0 $space-2;
+    color: $color-muted;
+    font-size: $font-size-label;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  &__rating {
+    display: flex;
+    gap: $space-2;
+    align-items: center;
+    color: $color-muted;
+    font-size: $font-size-meta;
+  }
+
+  &__stars {
+    color: $color-accent-hover;
+    letter-spacing: 0.08em;
+  }
+
+  &__utility-actions {
+    display: flex;
+    gap: $space-2;
+    flex: 0 0 auto;
+  }
+
+  &__icon-action {
+    display: inline-grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: $border-default;
+    border-radius: 50%;
+    background: $color-surface;
+    color: $color-text;
+    text-decoration: none;
+    transition:
+      background-color $transition-fast,
+      border-color $transition-fast;
+
+    svg {
+      width: 19px;
+      height: 19px;
+      fill: currentColor;
+    }
+
+    &:hover {
+      border-color: $color-accent;
+      background: rgba($color-accent, 0.16);
+    }
+  }
+
+  &__address {
+    display: flex;
+    gap: $space-2;
+    align-items: flex-start;
+    margin: $space-4 0 0;
+    color: $color-muted;
+    font-size: $font-size-meta;
+    line-height: 1.5;
+
+    svg {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    gap: $space-2;
+    flex-wrap: wrap;
+    margin: $space-3 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__tag {
+    display: inline-flex;
+    padding: $space-1 $space-2;
+    border: 1px solid rgba($color-text, 0.1);
+    border-radius: 999px;
+    background: $color-background;
+    color: $color-muted;
+    font-size: $font-size-label;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      border-color: $color-accent;
+      color: $color-text;
+    }
+  }
+
+  &__description {
+    margin: $space-4 0;
+    line-height: 1.75;
+
+    &--empty {
+      color: $color-muted;
+      font-style: italic;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $space-2;
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+
+  &__map-link {
+    display: block;
+    margin-top: $space-4;
+    overflow: hidden;
+    border: $border-default;
+    border-radius: $radius-card;
+    background: $color-surface;
+    box-shadow: $shadow-card;
+  }
+
   &__map {
-    width: calc(100% + 6rem);
-    max-width: none;
-    margin-top: -3rem;
-    margin-left: -3rem;
+    display: block;
+    width: 100%;
+    min-height: 180px;
+    object-fit: cover;
+    transition: opacity $transition-fast;
   }
-  &__location {
-    margin: 0;
-    margin-top: -3rem;
-    margin-right: -5rem;
-    background: $black;
-    color: white;
-    display: inline-block;
-    float: right;
-    position: relative;
-    padding: 1rem;
-    @media all and (max-width: 850px) {
-      margin-right: 0;
+
+  &__map-link:hover &__map {
+    opacity: 0.9;
+  }
+
+  &__reviews-section {
+    margin-top: $space-7;
+  }
+
+  &__section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-bottom: $space-4;
+    padding-bottom: $space-3;
+    border-bottom: $border-default;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__review-count {
+    display: inline-grid;
+    min-width: 32px;
+    height: 32px;
+    padding-inline: $space-2;
+    place-items: center;
+    border-radius: 16px;
+    background: $color-text;
+    color: $color-surface;
+    font-size: $font-size-meta;
+    font-weight: 700;
+  }
+}
+
+@media all and (max-width: 900px) {
+  .single {
+    &__overview {
+      grid-template-columns: 1fr;
+    }
+
+    &__media {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+    }
+  }
+}
+
+@media all and (max-width: 600px) {
+  .single {
+    &__summary {
+      padding: $space-4;
+    }
+
+    &__heading {
+      flex-direction: column;
+
+      h1 {
+        font-size: 3.6rem;
+      }
+    }
+
+    &__utility-actions {
+      order: -1;
+      align-self: flex-end;
+    }
+
+    &__rating {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    &__actions {
+      align-items: stretch;
+      flex-direction: column;
+
+      .button {
+        width: 100%;
+      }
+    }
+
+    &__reviews-section {
+      margin-top: $space-6;
     }
   }
 }

@@ -1,11 +1,35 @@
 extends layout
 
 block content
-  .inner 
-    h2 Edit Your Account
-    form(method="POST" action="/account")
-        label(for="name") Name
-        input(type="text" name="name" value=user.name)
-        label(for="email") Email
-        input(type="email" name="email" value=user.email)
-        input.button(type="submit" value="Update My Account")
+  .inner
+    .form-page
+      form.form.form--auth(method="POST" action="/account")
+        .form__header
+          p.form__eyebrow Your profile
+          h1 Edit your account
+          p Keep your name and account email up to date.
+
+        .form__field
+          label.form__label(for="account-name") Name
+          input.form__input(
+            id="account-name"
+            type="text"
+            name="name"
+            value=user.name
+            autocomplete="name"
+            required
+          )
+
+        .form__field
+          label.form__label(for="account-email") Email
+          input.form__input(
+            id="account-email"
+            type="email"
+            name="email"
+            value=user.email
+            autocomplete="email"
+            required
+          )
+
+        .form__actions
+          button.button.button--primary(type="submit") Update account

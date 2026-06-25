@@ -1,13 +1,27 @@
-extends layout 
+extends layout
 
 include mixins/_storeCard
 include mixins/_pagination
 
 block content
   .inner
-    h1 Stores
-    .stores
-        each store in stores
-            +storeCard(store) 
-    +pagination(page, pages, count)
+    .page-heading
+      .page-heading__copy
+        h1= title || "Stores"
+        if typeof count !== "undefined"
+          p.page-heading__meta #{count} #{count === 1 ? "store" : "stores"}
+        else if stores
+          p.page-heading__meta #{stores.length} #{stores.length === 1 ? "store" : "stores"}
 
+    if stores && stores.length
+      .stores
+        each store in stores
+          +storeCard(store)
+    else
+      .stores-empty
+        h2 No stores found
+        p There are no stores to show here yet.
+        a.button.button--secondary(href="/stores") Browse all stores
+
+    if pages && pages > 1
+      +pagination(page, pages, count)

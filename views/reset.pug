@@ -1,11 +1,33 @@
-extends layout 
+extends layout
 
-block content 
-    .inner 
-        form.form(action=`/account/reset/${token}` method="POST")
-            h2 Reset Your Password 
-            label(for="password") Password 
-            input(type="password" name="password")
-            label(for="password-confirm") Confirm Password 
-            input(type="password" name="password-confirm")
-            input.button(type="submit" value="Reset Password →")
+block content
+  .inner
+    .form-page
+      form.form.form--auth(action=`/account/reset/${token}` method="POST")
+        .form__header
+          p.form__eyebrow Account recovery
+          h1 Reset your password
+          p Choose a new password for your account.
+
+        .form__field
+          label.form__label(for="reset-password") New password
+          input.form__input(
+            id="reset-password"
+            type="password"
+            name="password"
+            autocomplete="new-password"
+            required
+          )
+
+        .form__field
+          label.form__label(for="reset-password-confirm") Confirm new password
+          input.form__input(
+            id="reset-password-confirm"
+            type="password"
+            name="password-confirm"
+            autocomplete="new-password"
+            required
+          )
+
+        .form__actions
+          button.button.button--primary(type="submit") Reset password

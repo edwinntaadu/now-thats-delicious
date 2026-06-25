@@ -1,11 +1,18 @@
 mixin pagination(page, pages, count)
-    .pagination     
-        .pagination__prev 
-            if page > 1 
-                a(href=`/stores/page/${page - 1}`) Prev 
-        .pagination__text 
-            p Page #{page} of #{pages} - #{count} total results 
-        .pagination__next 
-            if page < pages 
-                a(href=`/stores/page/${parseFloat(page) + 1}`)
-                Next
+  nav.pagination(aria-label="Store pages")
+    .pagination__side.pagination__side--prev
+      if page > 1
+        a.pagination__link(href=`/stores/page/${page - 1}` rel="prev")
+          span(aria-hidden="true") ←
+          span Previous
+
+    p.pagination__text
+      span Page #{page} of #{pages}
+      if typeof count !== "undefined"
+        span.pagination__count #{count} total
+
+    .pagination__side.pagination__side--next
+      if page < pages
+        a.pagination__link(href=`/stores/page/${parseFloat(page) + 1}` rel="next")
+          span Next
+          span(aria-hidden="true") →

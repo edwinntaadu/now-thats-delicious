@@ -6,9 +6,11 @@ import typeAhead from "./modules/typeAhead";
 import makeMap from "./modules/map";
 import ajaxHeart from "./modules/heart";
 
-window.initMapAutocomplete = function () {
-  autocomplete($("#address"), $("#lat"), $("#lng"));
-  makeMap($("#map"));
+window.initMapAutocomplete = async function () {
+  await Promise.allSettled([
+    autocomplete($("#address"), $("#lat"), $("#lng")),
+    makeMap($("#map")),
+  ]);
 };
 
 typeAhead($(".search"));

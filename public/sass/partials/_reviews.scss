@@ -1,57 +1,100 @@
+.reviews {
+  display: grid;
+  gap: $space-3;
+  margin-top: $space-4;
+}
+
 .review {
-  background: white;
-  border: 1px solid $grey;
-  border-bottom: 0;
-  border-bottom: 1px solid $grey;
-  margin-bottom: 2rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  position: relative;
-  padding-left: 5px;
-  &:before {
-    width:5px;
-    left: 0;
-    content: '';
-    display: block;
-    background: $verticalGrad;
-    position: absolute;
-    height: 100%;
-    background-attachment: fixed;
-  }
+  padding: $space-4;
+  border: $border-default;
+  border-radius: $radius-card;
+  background: $color-surface;
+
   &__header {
-    border-bottom: 1px solid $grey;
     display: flex;
-    & > * {
-      // this is fine, don't email me about it
-      border-right: 1px solid $grey;
-      padding: 0.2rem;
-      display: flex;
-      align-items: center;
-      flex: 1;
-      justify-content: center;
-      &:last-child {
-        border-right: 0;
-      }
-    }
+    gap: $space-3;
+    align-items: center;
+    justify-content: space-between;
   }
+
   &__author {
-    justify-content: flex-start;
-    padding-left:  2rem;
     display: flex;
+    gap: $space-3;
+    align-items: center;
+    min-width: 0;
+
     .avatar {
-      margin-right: 2rem;
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
     }
   }
+
+  &__author-details {
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 $space-1;
+      font-family: $font-body;
+      font-size: $font-size-body;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+  }
+
   &__time {
-    font-size: 1.2rem;
-    color: lighten(black, 60%);
+    color: $color-muted;
+    font-size: $font-size-label;
   }
+
   &__stars {
-    color: $yellow;
+    flex: 0 0 auto;
+    color: $color-accent-hover;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
   }
+
   &__body {
-    padding: 2rem;
+    margin-top: $space-3;
+    padding-top: $space-3;
+    border-top: $border-default;
+
+    p {
+      margin: 0;
+      white-space: pre-wrap;
+    }
   }
+}
+
+.reviews-empty,
+.review-login {
+  padding: $space-5;
+  border: $border-default;
+  border-radius: $radius-card;
+  background: $color-surface;
+  text-align: center;
+
+  h3 {
+    margin-bottom: $space-2;
+  }
+
   p {
-    white-space:pre-wrap;
+    margin-bottom: $space-3;
+    color: $color-muted;
+  }
+}
+
+.review-login {
+  margin-bottom: $space-4;
+}
+
+@media all and (max-width: 520px) {
+  .review {
+    padding: $space-3;
+
+    &__header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 }

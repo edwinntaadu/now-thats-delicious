@@ -1,8 +1,29 @@
 mixin loginForm()
-    form.form(action="/login" method="POST")
-        h2 Login
-        label(for="email") Email
-        input(type="email" name="email")
-        label(for="password") Password
-        input(type="password" name="password")
-        input.button(type="submit" value="Log In")
+  form.form.form--auth(action="/login" method="POST")
+    .form__header
+      p.form__eyebrow Welcome back
+      h1 Log in
+      p Access your saved stores, reviews, and account.
+
+    .form__field
+      label.form__label(for="login-email") Email
+      input.form__input(
+        id="login-email"
+        type="email"
+        name="email"
+        autocomplete="email"
+        required
+      )
+
+    .form__field
+      label.form__label(for="login-password") Password
+      input.form__input(
+        id="login-password"
+        type="password"
+        name="password"
+        autocomplete="current-password"
+        required
+      )
+
+    .form__actions
+      button.button.button--primary(type="submit") Log in

@@ -1,21 +1,46 @@
-extends layout 
+extends layout
 
-block content 
-    .inner 
-        h2 Top #{stores.length} Stores
-        table.table 
-            thead 
-                td photo
-                td ranking
-                td name
-                td reviews
-                td Average Rating 
-            each store, i in stores 
-                tr 
-                    td
-                        a(href=`/stores/${store.slug}`) 
-                        img(width=200 src=`/uploads/${store.photo || "store.png"}` alt=store.name) 
-                    td #{i + 1} 
-                    td: a(href=`/stores/${store.slug}`)= store.name 
-                    td= store.reviews.length
-                    td #{Math.round(store.averageRating * 10) / 10} / 5
+block content
+  .inner
+    .ranking-page
+      .ranking-page__heading
+        p.form__eyebrow Community favorites
+        h1 Top stores
+        p Ranked by average rating from stores with at least two reviews.
+
+      if stores && stores.length
+        ol.rankings
+          each store, index in stores
+            - const rating = Number(store.averageRating) || 0
+            - const roundedStars = Math.max(0, Math.min(5, Math.round(rating)))
+            li.ranking
+              .ranking__position(aria-label=`Rank ${index + 1}`)= index + 1
+
+              a.ranking__image-link(
+                href=`/stores/${store.slug}`
+                aria-label=`View ${store.name}`
+              )
+                img.ranking__image(
+                  src=`/uploads/${store.photo || "store.png"}`
+                  alt=store.name
+                  loading="lazy"
+                )
+
+              .ranking__details
+                h2.ranking__name
+                  a(href=`/stores/${store.slug}`)= store.name
+                .ranking__rating
+                  span.ranking__stars(aria-label=`Rated ${rating.toFixed(1)} out of 5 stars`)
+                    = "★".repeat(roundedStars)
+                    = "☆".repeat(5 - roundedStars)
+                  span.ranking__score #{rating.toFixed(1)}
+                p.ranking__reviews #{store.reviews.length} #{store.reviews.length === 1 ? "review" : "reviews"}
+
+              a.ranking__action(href=`/stores/${store.slug}`)
+                span View store
+                span(aria-hidden="true") →
+      else
+        .rankings-empty
+          h2 No rankings yet
+          p Stores need at least two reviews before they appear here.
+          a.button.button--secondary(href="/stores") Browse stores

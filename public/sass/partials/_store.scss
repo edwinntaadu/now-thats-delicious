@@ -1,89 +1,243 @@
+.page-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: $space-4;
+
+  h1 {
+    margin-bottom: $space-1;
+  }
+
+  &__meta {
+    margin: 0;
+    color: $color-muted;
+    font-size: $font-size-meta;
+  }
+}
+
 .stores {
-  display:flex;
-  flex-wrap:wrap;
-  margin: -1.25em 0 0 -1.25em;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $space-4;
 }
 
 .store {
-  background:white;
-  margin: 1.25em 0 0 1.25em;
-  width: calc(33.3333% - 1.25em);
-  box-shadow: $shad;
-  &--wide {
-    width: 100%;
-  }
-  &__details {
-    padding: 2rem;
-    p {
-      line-height: 1.2;
-      margin-bottom: 0;
-    }
-  }
-  @media all and (max-width: 850px) {
-    width: calc(50% - 1.25em);
-  }
-  @media all and (max-width: 550px) {
-    width: 100%;
-  }
-}
-
-.store__actions {
-  position: relative;
-  z-index: 2;
-  border-bottom: 1px solid rgba(0,0,0,0.2);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.2);
-  margin-bottom: 50px;
-  padding-top: 10px;
-  padding-bottom: 20px;
   display: flex;
-  color: white;
-  align-items: center;
-  justify-content: space-around;
-}
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+  border: $border-default;
+  border-radius: $radius-card;
+  background: $color-surface;
+  box-shadow: $shadow-card;
+  transition:
+    box-shadow $transition-fast,
+    transform $transition-fast;
 
-.store__action {
-  font-size: 10px;
-  svg {
-    width: 25px;
-    fill: white
+  &:hover {
+    box-shadow: $shadow-overlay;
+    transform: translateY(-2px);
   }
-  &--edit {
+
+  &__media {
+    position: relative;
+    flex: 0 0 auto;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: $color-border;
+  }
+
+  &__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-fast;
+  }
+
+  &:hover &__image {
+    transform: scale(1.02);
+  }
+
+  &__actions {
+    position: absolute;
+    z-index: 2;
+    top: $space-3;
+    right: $space-3;
+    display: flex;
+    gap: $space-2;
+  }
+
+  &__action {
+    display: inline-grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: $border-default;
+    border-radius: 50%;
+    background: rgba($color-surface, 0.96);
+    color: $color-text;
+    box-shadow: $shadow-card;
+    text-decoration: none;
+    transition:
+      background-color $transition-fast,
+      color $transition-fast,
+      transform $transition-fast;
+
+    svg {
+      width: 19px;
+      height: 19px;
+      fill: currentColor;
+    }
+
+    &:hover {
+      background: $color-accent;
+      transform: translateY(-1px);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: $space-4;
+  }
+
+  &__heading {
+    display: flex;
+    gap: $space-3;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &__title {
+    min-width: 0;
+    margin: 0;
+    font-size: $font-size-card-title;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+
     a {
-      border-bottom: 0;
+      text-decoration: none;
+
+      &:hover {
+        color: $color-accent-hover;
+      }
+    }
+  }
+
+  &__reviews {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: $space-1;
+    align-items: center;
+    color: $color-muted;
+    font-size: $font-size-meta;
+    font-weight: 700;
+
+    svg {
+      width: 18px;
+      height: 18px;
+
+      path {
+        stroke: currentColor;
+      }
+    }
+  }
+
+  &__address {
+    margin: $space-2 0 0;
+    color: $color-muted;
+    font-size: $font-size-meta;
+    line-height: 1.45;
+  }
+
+  &__tags {
+    display: flex;
+    gap: $space-2;
+    flex-wrap: wrap;
+    margin: $space-3 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__tag {
+    display: inline-flex;
+    padding: $space-1 $space-2;
+    border: 1px solid rgba($color-text, 0.1);
+    border-radius: 999px;
+    background: $color-background;
+    color: $color-muted;
+    font-size: $font-size-label;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+
+    &:hover {
+      border-color: $color-accent;
+      color: $color-text;
+    }
+  }
+
+  &__description {
+    margin: $space-3 0 $space-4;
+    color: $color-text;
+    font-size: $font-size-meta;
+    line-height: 1.6;
+
+    &--empty {
+      color: $color-muted;
+      font-style: italic;
+    }
+  }
+
+  &__view {
+    display: inline-flex;
+    gap: $space-2;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: auto;
+    color: $color-text;
+    font-size: $font-size-meta;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-accent-hover;
     }
   }
 }
 
+.stores-empty {
+  padding-block: $space-7;
+  border-block: $border-default;
+  text-align: center;
 
-.store__hero {
-  position: relative;
-  padding: 0 10px 0 10px;
-  text-align: right;
-  &:before {
-    display: block;
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    right: 0;
-    background:
-      linear-gradient(45deg, hsla(190, 95%, 43%, 1) 0%, hsla(190, 95%, 43%, 0) 70%),
-      linear-gradient(135deg, hsla(219, 93%, 48%, 1) 10%, hsla(219, 93%, 48%, 0) 80%),
-      linear-gradient(225deg, hsla(293, 93%, 48%, 1) 10%, hsla(293, 93%, 48%, 0) 80%),
-      linear-gradient(315deg, hsla(130, 96%, 45%, 1) 100%, hsla(130, 96%, 45%, 0) 70%);
-    opacity: 0.6;
-    z-index: 1;
-    clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+  h2 {
+    margin-bottom: $space-2;
   }
-  img {
-    height: 100%;
-    width: 100%;
-    top: 0;
-    right: 0;
-    position: absolute;
-    left: 0;
-    object-fit: cover;
-    clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+}
+
+@media all and (max-width: 900px) {
+  .stores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media all and (max-width: 580px) {
+  .stores {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .store {
+    &:hover {
+      transform: none;
+    }
   }
 }

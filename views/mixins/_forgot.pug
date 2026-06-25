@@ -1,6 +1,19 @@
 mixin forgotForm()
-    form.form(action="/account/forgot", method="POST")
-        h2 I forgot my Password!
-        label(for="email") Email
-        input(type="email", name="email")
-        input.button(type="submit" value="Send a Reset")
+  form.form.form--auth.form--muted(action="/account/forgot" method="POST")
+    .form__header
+      p.form__eyebrow Account recovery
+      h2 Forgot your password?
+      p Enter your account email and we will send you a reset link.
+
+    .form__field
+      label.form__label(for="forgot-email") Email
+      input.form__input(
+        id="forgot-email"
+        type="email"
+        name="email"
+        autocomplete="email"
+        required
+      )
+
+    .form__actions
+      button.button.button--secondary(type="submit") Send reset link

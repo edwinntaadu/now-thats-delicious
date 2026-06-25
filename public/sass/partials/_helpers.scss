@@ -1,14 +1,64 @@
 .hide {
-  text-indent: -999999px;
-  font-size: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .button {
-  border: 0;
-  background: $yellow;
-  color: $black;
-  font-family: 'Panama';
-  font-weight: 600;
+  display: inline-flex;
+  gap: $space-2;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  padding: $space-2 $space-3;
+  border: 1px solid transparent;
+  border-radius: $radius-button;
+  background: $color-accent;
+  color: $color-text;
+  font-family: $font-body;
+  font-size: $font-size-meta;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color $transition-fast,
+    border-color $transition-fast,
+    color $transition-fast;
+
+  svg {
+    width: 19px;
+    height: 19px;
+    fill: currentColor;
+  }
+
+  &:hover,
+  &--primary:hover {
+    background: $color-accent-hover;
+  }
+
+  &--primary {
+    background: $color-accent;
+    color: $color-text;
+  }
+
+  &--secondary {
+    border-color: $color-border;
+    background: $color-surface;
+    color: $color-text;
+
+    &:hover {
+      border-color: $color-accent;
+      background: rgba($color-accent, 0.12);
+    }
+  }
 }
 
 .avatar {
@@ -19,9 +69,11 @@
 }
 
 .card {
-  background: white;
-  padding: 5rem;
-  box-shadow: 0 1px 10px rgba(0,0,0,0.15);
+  padding: $space-5;
+  border: $border-default;
+  border-radius: $radius-card;
+  background: $color-surface;
+  box-shadow: $shadow-card;
 }
 
 pre.error {

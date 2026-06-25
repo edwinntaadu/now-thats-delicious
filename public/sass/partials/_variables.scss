@@ -1,11 +1,59 @@
-$black: #303030;
-$width: 800px;
+// Color system
+$color-text: #242424;
+$color-muted: #686868;
+$color-background: #f4f4f1;
+$color-surface: #ffffff;
+$color-border: #deded8;
+$color-accent: #ffc40e;
+$color-accent-hover: #e7ad00;
+$color-success: #197447;
+$color-error: #b42318;
+$color-info: #2563a8;
+
+// Typography
+$font-display: "Panama", Georgia, serif;
+$font-body:
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  sans-serif;
+$font-size-display: 4.8rem;
+$font-size-page-title: 3.6rem;
+$font-size-section-title: 2.6rem;
+$font-size-card-title: 2.2rem;
+$font-size-body: 1.6rem;
+$font-size-meta: 1.4rem;
+$font-size-label: 1.2rem;
+
+// Spacing
+$space-1: 0.4rem;
+$space-2: 0.8rem;
+$space-3: 1.6rem;
+$space-4: 2.4rem;
+$space-5: 3.2rem;
+$space-6: 4.8rem;
+$space-7: 6.4rem;
+
+// Layout and shape
+$container-width: 1140px;
+$radius-input: 4px;
+$radius-button: 4px;
+$radius-card: 6px;
+$border-default: 1px solid $color-border;
+$shadow-card: 0 4px 16px rgba(0, 0, 0, 0.07);
+$shadow-overlay: 0 10px 30px rgba(0, 0, 0, 0.14);
+$transition-fast: 180ms ease;
+$focus-ring: 0 0 0 3px rgba($color-accent, 0.45);
+
+// Temporary aliases for components that have not been modernized yet.
+$black: $color-text;
+$width: $container-width;
 $purple: #262161;
-$yellow: #FFC40E;
-$pink: #EE7297;
-$green: #93FF00;
-$red: #E50714;
-$grey: lighten(grey, 40%);
-$shad: 0 0 10px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
-$grad: linear-gradient(90deg, #48ded4 0%, #a026bf 20%, #e82c75 60%, $yellow 85%, #48ded4 95%);
-$verticalGrad: linear-gradient(0, #48ded4 0%, #a026bf 20%, #e82c75 60%, $yellow 85%, #48ded4 95%);
+$yellow: $color-accent;
+$pink: #ee7297;
+$green: $color-success;
+$red: $color-error;
+$grey: $color-border;
+$shad: $shadow-card;
+$grad: linear-gradient(90deg, $color-accent, $color-accent-hover);
+$verticalGrad: linear-gradient(0deg, $color-accent, $color-accent-hover);

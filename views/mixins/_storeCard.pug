@@ -1,26 +1,62 @@
 mixin storeCard(store)
-    .store
-        .store__hero 
-            .store__actions
-                if user 
-                    .store__action.store__action--heart 
-                        form.heart(method="POST" action=`/api/stores/${store._id}/heart`)
-                            - const heartStrings = user.hearts.map(obj => obj.toString())
-                            - const heartClass = heartStrings.includes(store._id.toString()) ? "heart__button--hearted" : ""
-                            button.heart__button(type="submit" name="heart" class=heartClass)
-                                != h.icon("heart")
-                if user && store.author.equals(user._id)
-                    .store__action.store__action--edit
-                        a(href=`/stores/${store._id}/edit`)
-                            != h.icon('pencil')
-                if store.reviews 
-                    .store__action.store__action--count 
-                        != h.icon("review")
-                        span= store.reviews.length
-            img(src=`/uploads/${store.photo || 'store.png'}`)
-            h2.title 
-                a(href=`/stores/${store.slug}`)= store.name
-        .store__details
-            p= store.description.split(" ").slice(0, 20).join(" ") + "..."
-    
-    
+  article.store
+    .store__media
+      a.store__image-link(href=`/stores/${store.slug}` aria-label=`View ${store.name}`)
+        img.store__image(
+          src=`/uploads/${store.photo || 'store.png'}`
+          alt=store.name
+          loading="lazy"
+        )
+
+      if user
+        .store__actions
+          form.heart(method="POST" action=`/api/stores/${store._id}/heart`)
+            - const heartStrings = user.hearts.map(obj => obj.toString())
+            - const isHearted = heartStrings.includes(store._id.toString())
+            - const heartClass = isHearted ? "heart__button--hearted" : ""
+            button.heart__button(
+              type="submit"
+              name="heart"
+              class=heartClass
+              aria-label=(isHearted ? `Remove ${store.name} from saved stores` : `Save ${store.name}`)
+              title=(isHearted ? "Remove from saved stores" : "Save store")
+            )
+              != h.icon("heart")
+
+          if store.author && store.author.equals(user._id)
+            a.store__action(
+              href=`/stores/${store._id}/edit`
+              aria-label=`Edit ${store.name}`
+              title="Edit store"
+            )
+              != h.icon("pencil")
+
+    .store__content
+      .store__heading
+        h2.store__title
+          a(href=`/stores/${store.slug}`)= store.name
+
+        if store.reviews
+          span.store__reviews(aria-label=`${store.reviews.length} reviews`)
+            != h.icon("review")
+            span= store.reviews.length
+
+      if store.location && store.location.address
+        p.store__address= store.location.address
+
+      if store.tags && store.tags.length
+        ul.store__tags(aria-label="Store tags")
+          each tag in store.tags.slice(0, 3)
+            li
+              a.store__tag(href=`/tags/${tag}`)= tag
+
+      if store.description
+        - const words = store.description.trim().split(/\s+/)
+        - const summary = words.slice(0, 22).join(" ")
+        p.store__description= summary + (words.length > 22 ? "..." : "")
+      else
+        p.store__description.store__description--empty No description available.
+
+      a.store__view(href=`/stores/${store.slug}`)
+        span View store
+        span(aria-hidden="true") →

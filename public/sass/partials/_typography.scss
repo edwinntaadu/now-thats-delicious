@@ -1,18 +1,20 @@
 @font-face {
-  font-family: "panama";
+  font-family: "Panama";
   src: url("../../fonts/panama-bold-webfont.woff2") format("woff2"),
     url("../../fonts/panama-bold-webfont.woff") format("woff");
-  font-weight: normal;
+  font-weight: 700;
   font-style: normal;
-}
-
-html {
-  font-size: 10px;
+  font-display: swap;
 }
 
 body {
-  font-size: 1.5rem;
-  color: $black;
+  color: $color-text;
+  font-family: $font-body;
+  font-size: $font-size-body;
+  line-height: 1.6;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
@@ -21,62 +23,111 @@ h3,
 h4,
 h5,
 h6 {
-  font-size: 5rem;
-  font-family: "Panama";
-  font-weight: 600;
-  letter-spacing: -1px;
+  margin-block: 0 $space-4;
+  color: $color-text;
+  font-family: $font-display;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
 }
 
-a {
-  text-decoration: none;
-  color: $black;
+h1 {
+  font-size: $font-size-page-title;
 }
 
-p a {
-  border-bottom: 2px solid $yellow;
+h2 {
+  font-size: $font-size-section-title;
+}
+
+h3 {
+  font-size: $font-size-card-title;
+}
+
+h4,
+h5,
+h6 {
+  font-size: $font-size-body;
 }
 
 p {
-  line-height: 2;
-  font-size: 1.6rem;
+  margin-block: 0 $space-3;
+  font-size: $font-size-body;
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: $color-accent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  transition:
+    color $transition-fast,
+    text-decoration-color $transition-fast;
+
+  &:hover {
+    text-decoration-color: $color-accent-hover;
+  }
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  &:focus-visible {
+    outline: 2px solid $color-accent-hover;
+    outline-offset: 3px;
+  }
 }
 
 .title {
-  word-wrap: break-word;
   position: relative;
   z-index: 2;
   margin: 0;
-  font-size: 40px;
-  z-index: 2;
-  line-height: 1.1;
-  transform: skew(0, -3deg);
+  font-size: $font-size-card-title;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+
   &--long {
-    font-size: 30px;
+    font-size: 2rem;
   }
-  &:before {
-    content: "";
-    width: 50px;
-    left: 0;
-    top: 0;
-    height: 100%;
-    // top:10%;
-    display: block;
-    position: absolute;
-    z-index: -1;
-    transform: skew(-5deg);
-  }
-  line-height: 1.1;
-  // inline link inside
+
   a {
-    border-bottom: 0;
-    $yellowa: rgba($yellow, 0.8);
-    background-image: linear-gradient(to right, $yellowa 100%, $yellowa 50%);
+    text-decoration: none;
   }
 }
 
 .title--single {
-  max-width: 600px;
-  margin-top: -9rem;
-  font-size: 10rem;
+  max-width: 720px;
+  margin: 0;
+  padding-inline: $space-4;
+  color: $color-surface;
+  font-size: $font-size-display;
   text-align: center;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+}
+
+.meta {
+  color: $color-muted;
+  font-size: $font-size-meta;
+}
+
+.label {
+  font-size: $font-size-label;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media all and (max-width: 600px) {
+  h1 {
+    font-size: 3.2rem;
+  }
+
+  h2 {
+    font-size: 2.4rem;
+  }
+
+  .title--single {
+    font-size: 3.6rem;
+  }
 }

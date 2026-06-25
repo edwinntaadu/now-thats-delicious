@@ -1,10 +1,41 @@
 extends layout
 
 block content
-    .inner
-        h2= title
-        .map 
-            .autocomplete
-                input.autocomplete__input(type="text" placeholder="Search for Anything" name="geolocate")
-            #map 
-                p Loading Map...
+  .inner
+    .map-heading
+      .map-heading__copy
+        p.form__eyebrow Explore nearby
+        h1= title
+        p Search any neighborhood or address to find stores within 10 km.
+
+    section.map-discovery(aria-labelledby="map-search-heading")
+      .map-toolbar
+        .map-toolbar__search
+          label.map-toolbar__label#map-search-heading Find stores near a location
+          #map-search.map-search
+            input.map-search__fallback(
+              type="search"
+              name="geolocate"
+              placeholder="Search anywhere"
+              autocomplete="off"
+              aria-label="Search for a location"
+            )
+
+        button.button.button--secondary.map-toolbar__reset(
+          type="button"
+          data-map-reset
+        ) Reset to Berlin
+
+      p#map-status.map-status(
+        role="status"
+        aria-live="polite"
+      ) Loading nearby stores…
+
+      #map.map-canvas(
+        role="region"
+        aria-label="Map of nearby stores"
+      )
+        p.map-canvas__fallback Loading map…
+
+    noscript
+      p.map-noscript JavaScript is required to use the interactive map.

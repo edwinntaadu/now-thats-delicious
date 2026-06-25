@@ -1,15 +1,55 @@
-extends layout 
+extends layout
 
 block content
-    .inner 
-        form.form(action="/register" method="POST")
-            h2 Register
-            label(for="name") Name
-            input(type="text" name="name" required)
-            label(for="email") Email
-            input(type="email" name="email" required)
-            label(for="password") Password
-            input(type="password" name="password" required)
-            label(for="password-confirm") Confirm Password
-            input(type="password" name="password-confirm" required)
-            input.button(type="submit" value="Register→")
+  .inner
+    .form-page
+      form.form.form--auth(action="/register" method="POST")
+        .form__header
+          p.form__eyebrow Join the community
+          h1 Create an account
+          p Save restaurants, add listings, and share reviews.
+
+        .form__field
+          label.form__label(for="register-name") Name
+          input.form__input(
+            id="register-name"
+            type="text"
+            name="name"
+            value=(typeof body !== "undefined" && body.name)
+            autocomplete="name"
+            required
+          )
+
+        .form__field
+          label.form__label(for="register-email") Email
+          input.form__input(
+            id="register-email"
+            type="email"
+            name="email"
+            value=(typeof body !== "undefined" && body.email)
+            autocomplete="email"
+            required
+          )
+
+        .form__field
+          label.form__label(for="register-password") Password
+          input.form__input(
+            id="register-password"
+            type="password"
+            name="password"
+            autocomplete="new-password"
+            required
+          )
+
+        .form__field
+          label.form__label(for="register-password-confirm") Confirm password
+          input.form__input(
+            id="register-password-confirm"
+            type="password"
+            name="password-confirm"
+            autocomplete="new-password"
+            required
+          )
+
+        .form__actions
+          button.button.button--primary(type="submit") Create account

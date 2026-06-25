@@ -1,17 +1,58 @@
-extends layout 
+extends layout
 
 include mixins/_storeCard
 
 block content
-    .inner
-        h2 #{tag || "Tags"}
-        ul.tags
-            each t in tags
-                li.tag
-                    a.tag__link(href=`/tags/${t._id}` class=(t._id
-                    === tag ? "tag__link--active" : ""))
-                        span.tag__text= t._id
-                        span.tag__count= t.count
-        .stores 
+  .inner
+    .tag-page
+      .tag-page__heading
+        .tag-page__copy
+          p.form__eyebrow Browse by feature
+          h1= tag || "All tags"
+          p
+            if tag
+              | Stores tagged with “#{tag}”.
+            else
+              | Choose a feature to narrow the store list.
+
+        if tag
+          a.button.button--secondary(href="/tags") Clear filter
+
+      if tags && tags.length
+        nav.tag-filters(aria-label="Filter stores by tag")
+          a.tag-filter(
+            href="/tags"
+            class=(!tag ? "tag-filter--active" : "")
+            aria-current=(!tag ? "page" : false)
+          )
+            span All
+            span.tag-filter__count= stores.length
+
+          each item in tags
+            a.tag-filter(
+              href=`/tags/${item._id}`
+              class=(item._id === tag ? "tag-filter--active" : "")
+              aria-current=(item._id === tag ? "page" : false)
+            )
+              span= item._id
+              span.tag-filter__count= item.count
+
+      .tag-page__results
+        .page-heading
+          .page-heading__copy
+            h2 #{stores.length} #{stores.length === 1 ? "store" : "stores"}
+            p.page-heading__meta
+              if tag
+                | Matching “#{tag}”
+              else
+                | Across all available tags
+
+        if stores && stores.length
+          .stores
             each store in stores
-                +storeCard(store)
+              +storeCard(store)
+        else
+          .stores-empty
+            h2 No stores found
+            p No stores currently use this tag.
+            a.button.button--secondary(href="/tags") Browse all tags

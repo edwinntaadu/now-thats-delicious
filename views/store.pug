@@ -4,29 +4,120 @@ include mixins/_reviewForm
 include mixins/_review
 
 block content
-    .single 
-        .single__hero 
-            img.single__image(src=`/uploads/${store.photo || 'store.png'}`)
-            h2.title.title--single
-                a(href=`/stores/${store.slug}`) #{store.name}
-    
-    .single__details.inner
-        img.single__map(src=h.staticMap(store.location.coordinates))
-        p.single__location= store.location.address
-        p= store.description
+  - const reviews = store.reviews || []
+  - const ratings = reviews.map(review => Number(review.rating)).filter(rating => rating > 0)
+  - const averageRating = ratings.length ? ratings.reduce((total, rating) => total + rating, 0) / ratings.length : 0
+  - const coordinates = store.location && store.location.coordinates
+  - const mapsUrl = coordinates ? `https://www.google.com/maps/search/?api=1&query=${coordinates[1]},${coordinates[0]}` : null
 
-        if store.tags
-            ul.tags 
-                each tag in store.tags
-                    li.tag 
-                        a.tag__link(href=`/tags/${tag}`)
-                            span.tag__text ##{tag}
+  article.single
+    .inner
+      .single__overview
+        .single__media
+          img.single__image(
+            src=`/uploads/${store.photo || 'store.png'}`
+            alt=store.name
+          )
 
-        if user 
+        .single__summary
+          .single__heading
+            .single__heading-copy
+              p.single__eyebrow Restaurant
+              h1= store.name
+
+              .single__rating
+                if ratings.length
+                  span.single__stars(aria-label=`Rated ${averageRating.toFixed(1)} out of 5 stars`)
+                    = "★".repeat(Math.round(averageRating))
+                    = "☆".repeat(5 - Math.round(averageRating))
+                  span #{averageRating.toFixed(1)} · #{reviews.length} #{reviews.length === 1 ? "review" : "reviews"}
+                else
+                  span No reviews yet
+
+            if user
+              .single__utility-actions
+                - const heartStrings = user.hearts.map(obj => obj.toString())
+                - const isHearted = heartStrings.includes(store._id.toString())
+                form.heart(method="POST" action=`/api/stores/${store._id}/heart`)
+                  button.heart__button(
+                    type="submit"
+                    name="heart"
+                    class=(isHearted ? "heart__button--hearted" : "")
+                    aria-label=(isHearted ? `Remove ${store.name} from saved stores` : `Save ${store.name}`)
+                    title=(isHearted ? "Remove from saved stores" : "Save store")
+                  )
+                    != h.icon("heart")
+
+                if store.author && store.author._id && store.author._id.equals(user._id)
+                  a.single__icon-action(
+                    href=`/stores/${store._id}/edit`
+                    aria-label=`Edit ${store.name}`
+                    title="Edit store"
+                  )
+                    != h.icon("pencil")
+
+          if store.location && store.location.address
+            p.single__address
+              != h.icon("map")
+              span= store.location.address
+
+          if store.tags && store.tags.length
+            ul.single__tags(aria-label="Store tags")
+              each tag in store.tags
+                li
+                  a.single__tag(href=`/tags/${tag}`)= tag
+
+          if store.description
+            p.single__description= store.description
+          else
+            p.single__description.single__description--empty No description is available for this store.
+
+          .single__actions
+            if mapsUrl
+              a.button.button--primary(
+                href=mapsUrl
+                target="_blank"
+                rel="noopener noreferrer"
+              )
+                != h.icon("map")
+                span View on Google Maps
+
+            if user && !(store.author && store.author._id && store.author._id.equals(user._id))
+              a.button.button--secondary(href="#leave-review") Leave a review
+
+      if coordinates
+        a.single__map-link(
+          href=mapsUrl
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label=`View ${store.name} on Google Maps`
+        )
+          img.single__map(
+            src=h.staticMap(coordinates)
+            alt=`Map showing ${store.location.address}`
+            loading="lazy"
+          )
+
+      section.single__reviews-section(aria-labelledby="reviews-heading")
+        .single__section-heading
+          .single__section-copy
+            p.single__eyebrow Community
+            h2#reviews-heading Reviews
+          span.single__review-count= reviews.length
+
+        if user
+          #leave-review
             +reviewForm(store)
+        else
+          .review-login
+            p Sign in to share your experience at #{store.name}.
+            a.button.button--secondary(href="/login") Log in to review
 
-        if store.reviews 
-            .reviews 
-                each review in store.reviews 
-                    .review 
-                        +review(review)
+        if reviews.length
+          .reviews
+            each review in reviews
+              +review(review)
+        else
+          .reviews-empty
+            h3 Be the first to review
+            p Share what you ordered, what stood out, and whether you would visit again.

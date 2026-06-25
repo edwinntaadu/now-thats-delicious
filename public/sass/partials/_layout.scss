@@ -1,23 +1,38 @@
 html {
-  font-size: 10px;
+  min-height: 100%;
+  font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: $purple;
-  background:#efefef;
+  min-height: 100vh;
+  margin: 0;
+  background: $color-background;
+
   &:before {
-    content: '';
+    content: "";
     display: block;
-    background: $grad;
-    height: 10px;
     width: 100%;
+    height: $space-1;
+    background: $color-accent;
   }
 }
 
+.content {
+  padding-block: $space-5 $space-7;
+}
+
 .inner {
-  max-width:900px;
-  margin: 0 auto;
-  @media all and (max-width: 900px) {
-    padding: 2rem;
+  width: min(100% - #{$space-6}, $container-width);
+  margin-inline: auto;
+}
+
+@media all and (max-width: 600px) {
+  .content {
+    padding-block: $space-4 $space-6;
+  }
+
+  .inner {
+    width: min(100% - #{$space-5}, $container-width);
   }
 }

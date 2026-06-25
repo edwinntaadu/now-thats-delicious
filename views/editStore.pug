@@ -1,8 +1,12 @@
-extends layout 
+extends layout
 
 include mixins/_storeForm
 
 block content
   .inner
-    h2= title
-    +storeForm(store)
+    .form-page.form-page--wide
+      .form-page__heading
+        p.form__eyebrow Store listing
+        h1= title
+        p Add the practical details people need to discover this place.
+      +storeForm(store)
