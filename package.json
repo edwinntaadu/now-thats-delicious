@@ -8,6 +8,9 @@
     "dev": "nodemon server.js",
     "watch": "webpack --watch",
     "build": "webpack",
+    "photos:migrate:dry-run": "node scripts/migratePhotosToBlob.js --dry-run",
+    "photos:migrate:upload": "node scripts/migratePhotosToBlob.js --upload",
+    "photos:migrate:apply": "node scripts/migratePhotosToBlob.js --apply",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

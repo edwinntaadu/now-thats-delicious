@@ -9,6 +9,9 @@ logs
 *.log
 npm-debug.log*
 
+# Generated migration output
+scripts/photo-migration-manifest.json
+
 # Build folders
 dist/
 build/
