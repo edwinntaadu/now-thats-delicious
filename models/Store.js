@@ -39,6 +39,7 @@ const storeSchema = new mongoose.Schema(
       },
     },
     photo: String,
+    photoPathname: String,
     author: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
@@ -101,6 +102,7 @@ storeSchema.statics.getTopStores = function () {
     {
       $project: {
         photo: "$$ROOT.photo",
+        photoPathname: "$$ROOT.photoPathname",
         name: "$$ROOT.name",
         slug: "$$ROOT.slug",
         reviews: "$$ROOT.reviews",

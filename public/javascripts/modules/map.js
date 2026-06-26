@@ -18,6 +18,12 @@ function setStatus(statusElement, message, state = "loading") {
   statusElement.dataset.state = state;
 }
 
+function getPhotoSrc(photo) {
+  if (!photo) return "/uploads/store.png";
+  if (/^https?:\/\//i.test(photo)) return photo;
+  return `/uploads/${photo}`;
+}
+
 function createPopup(place) {
   const [lng, lat] = place.location.coordinates;
   const storeUrl = `/stores/${encodeURIComponent(place.slug)}`;
@@ -33,7 +39,7 @@ function createPopup(place) {
 
   const image = document.createElement("img");
   image.className = "popup__image";
-  image.src = `/uploads/${place.photo || "store.png"}`;
+  image.src = getPhotoSrc(place.photo);
   image.alt = place.name;
   image.loading = "lazy";
   imageLink.appendChild(image);

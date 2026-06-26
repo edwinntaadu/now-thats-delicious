@@ -105,7 +105,7 @@ mixin storeForm(store = {})
       .photo-field
         if store.photo
           img.photo-field__preview(
-            src=`/uploads/${store.photo}`
+            src=h.storePhoto(store.photo)
             alt=`Current photo for ${store.name}`
           )
 

@@ -3,7 +3,7 @@ mixin storeCard(store)
     .store__media
       a.store__image-link(href=`/stores/${store.slug}` aria-label=`View ${store.name}`)
         img.store__image(
-          src=`/uploads/${store.photo || 'store.png'}`
+          src=h.storePhoto(store.photo)
           alt=store.name
           loading="lazy"
         )

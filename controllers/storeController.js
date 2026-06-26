@@ -2,12 +2,19 @@ const mongoose = require("mongoose");
 const Store = mongoose.model("Store");
 const User = mongoose.model("User");
 const multer = require("multer");
-const { Jimp } = require("jimp");
+const { Jimp, JimpMime } = require("jimp");
 //const uuid = require("uuid");
 const { randomUUID } = require("node:crypto");
 
+const MAX_UPLOAD_SIZE = 4 * 1024 * 1024;
+const PHOTO_CONTENT_TYPE = JimpMime.jpeg;
+const PHOTO_UPLOAD_FOLDER = "store-photos";
+
 const multerOptions = {
   storage: multer.memoryStorage(),
+  limits: {
+    fileSize: MAX_UPLOAD_SIZE,
+  },
   fileFilter(req, file, next) {
     const isPhoto = file.mimetype.startsWith("image/");
     if (isPhoto) {
@@ -17,6 +24,31 @@ const multerOptions = {
     }
   },
 };
+
+async function uploadPhoto(buffer) {
+  const { put } = await import("@vercel/blob");
+  return put(`${PHOTO_UPLOAD_FOLDER}/${randomUUID()}.jpeg`, buffer, {
+    access: "public",
+    addRandomSuffix: false,
+    contentType: PHOTO_CONTENT_TYPE,
+  });
+}
+
+function isBlobUrl(photo) {
+  return typeof photo === "string" && /^https?:\/\/.+vercel-storage\.com\//i.test(photo);
+}
+
+async function deletePhoto(photoPathname, photoUrl) {
+  const photoToDelete = photoPathname || (isBlobUrl(photoUrl) ? photoUrl : null);
+  if (!photoToDelete) return;
+
+  try {
+    const { del } = await import("@vercel/blob");
+    await del(photoToDelete);
+  } catch (error) {
+    console.error("Could not delete old Blob photo", error);
+  }
+}
 
 // GET home page
 exports.homePage = (req, res) => {
@@ -39,14 +71,14 @@ exports.resize = async (req, res, next) => {
     next(); // skip to the next middleware
     return;
   }
-  const extension = req.file.mimetype.split("/")[1];
-  //req.body.photo = `${uuid.v4()}.${extension}`; // generate a unique filename for the photo
-  req.body.photo = `${randomUUID()}.${extension}`;
   // Now we resize the photo
   const photo = await Jimp.read(req.file.buffer);
   await photo.resize({ w: 800 });
-  await photo.write(`./public/uploads/${req.body.photo}`);
-  // Once we have written the photo to our filesystem, keep going!
+  const buffer = await photo.getBuffer(PHOTO_CONTENT_TYPE, { quality: 82 });
+  const blob = await uploadPhoto(buffer);
+  req.body.photo = blob.url;
+  req.body.photoPathname = blob.pathname;
+  // Once we have uploaded the photo to Blob, keep going!
   next();
 };
 
@@ -108,11 +140,17 @@ exports.editStore = async (req, res) => {
 exports.updateStore = async (req, res) => {
   // Set the location data to be a point
   req.body.location.type = "Point";
+  const previousStore = req.body.photoPathname
+    ? await Store.findOne({ _id: req.params.id }).select("photo photoPathname")
+    : null;
   // 1. Find and updare the store
   const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true, // return the new store instead of the old one
     runValidators: true, // force our model to run the validators for us
   }).exec();
+  if (previousStore) {
+    await deletePhoto(previousStore.photoPathname, previousStore.photo);
+  }
   req.flash(
     "success",
     `Successfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store →</a>`,

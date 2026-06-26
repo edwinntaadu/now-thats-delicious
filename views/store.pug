@@ -15,7 +15,7 @@ block content
       .single__overview
         .single__media
           img.single__image(
-            src=`/uploads/${store.photo || 'store.png'}`
+            src=h.storePhoto(store.photo)
             alt=store.name
           )
 

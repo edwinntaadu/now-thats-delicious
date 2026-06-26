@@ -21,7 +21,7 @@ block content
                 aria-label=`View ${store.name}`
               )
                 img.ranking__image(
-                  src=`/uploads/${store.photo || "store.png"}`
+                  src=h.storePhoto(store.photo)
                   alt=store.name
                   loading="lazy"
                 )
