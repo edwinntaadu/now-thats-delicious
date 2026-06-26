@@ -38,6 +38,18 @@ function isBlobUrl(photo) {
   return typeof photo === "string" && /^https?:\/\/.+vercel-storage\.com\//i.test(photo);
 }
 
+function normalizeCoordinates(coordinates = []) {
+  const lng = coordinates[0];
+  const lat = coordinates[1];
+
+  if (lng === undefined || lng === "" || lat === undefined || lat === "") {
+    return null;
+  }
+
+  const normalized = [Number(lng), Number(lat)];
+  return normalized.every(Number.isFinite) ? normalized : null;
+}
+
 async function deletePhoto(photoPathname, photoUrl) {
   const photoToDelete = photoPathname || (isBlobUrl(photoUrl) ? photoUrl : null);
   if (!photoToDelete) return;
@@ -122,6 +134,12 @@ exports.getStores = async (req, res) => {
 };
 
 const confirmOwner = (store, user) => {
+  if (!store) {
+    throw Error("No store found!");
+  }
+  if (!user) {
+    throw Error("You must be logged in to edit a store!");
+  }
   if (!store.author.equals(user._id)) {
     throw Error("You must own a store in order to edit it!");
   }
@@ -138,17 +156,38 @@ exports.editStore = async (req, res) => {
 };
 
 exports.updateStore = async (req, res) => {
+  const previousStore = await Store.findOne({ _id: req.params.id }).select(
+    "author location photo photoPathname",
+  );
+  confirmOwner(previousStore, req.user);
+
   // Set the location data to be a point
+  req.body.location = req.body.location || {};
   req.body.location.type = "Point";
-  const previousStore = req.body.photoPathname
-    ? await Store.findOne({ _id: req.params.id }).select("photo photoPathname")
-    : null;
+
+  req.body.location.coordinates =
+    normalizeCoordinates(req.body.location.coordinates)
+    || normalizeCoordinates(previousStore.location?.coordinates);
+
+  if (!req.body.location.address && previousStore.location?.address) {
+    req.body.location.address = previousStore.location.address;
+  }
+
   // 1. Find and updare the store
-  const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
-    new: true, // return the new store instead of the old one
-    runValidators: true, // force our model to run the validators for us
-  }).exec();
-  if (previousStore) {
+  let store;
+  try {
+    store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      returnDocument: "after", // return the new store instead of the old one
+      runValidators: true, // force our model to run the validators for us
+    }).exec();
+  } catch (error) {
+    if (req.body.photoPathname) {
+      await deletePhoto(req.body.photoPathname, req.body.photo);
+    }
+    throw error;
+  }
+
+  if (req.body.photoPathname) {
     await deletePhoto(previousStore.photoPathname, previousStore.photo);
   }
   req.flash(
