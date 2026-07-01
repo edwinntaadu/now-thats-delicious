@@ -16,6 +16,8 @@ const connectDB = require("./config/db");
 require("./models/Store");
 require("./models/User");
 require("./models/Review");
+require("./models/Reservation");
+
 require("./handlers/passport");
 const routes = require("./routes/index");
 const { error } = require("console");

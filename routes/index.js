@@ -4,6 +4,7 @@ const storeController = require("../controllers/storeController");
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
 const reviewController = require("../controllers/reviewController");
+const reservationController = require("../controllers/reservationController");
 const { catchErrors } = require("../handlers/errorHandlers");
 
 router.get("/", catchErrors(storeController.getStores));
@@ -64,6 +65,54 @@ router.post(
   catchErrors(reviewController.addReview),
 );
 router.get("/top", catchErrors(storeController.getTopStores));
+
+router.post(
+  "/stores/:id/reservations",
+  authController.isLoggedIn,
+  catchErrors(reservationController.createReservation),
+);
+
+router.get(
+  "/account/reservations",
+  authController.isLoggedIn,
+  catchErrors(reservationController.getUserReservations),
+);
+
+router.get(
+  "/stores/:id/reservations",
+  authController.isLoggedIn,
+  catchErrors(reservationController.getStoreReservations),
+);
+
+router.post(
+  "/reservations/:id/cancel",
+  authController.isLoggedIn,
+  catchErrors(reservationController.cancelReservation),
+);
+
+router.post(
+  "/reservations/:id/confirm",
+  authController.isLoggedIn,
+  catchErrors(reservationController.confirmReservation),
+);
+
+router.post(
+  "/reservations/:id/decline",
+  authController.isLoggedIn,
+  catchErrors(reservationController.declineReservation),
+);
+
+router.post(
+  "/reservations/:id/complete",
+  authController.isLoggedIn,
+  catchErrors(reservationController.completeReservation),
+);
+
+router.post(
+  "/reservations/:id/no-show",
+  authController.isLoggedIn,
+  catchErrors(reservationController.noShowReservation),
+);
 
 // API
 router.get("/api/search", catchErrors(storeController.searchStores));

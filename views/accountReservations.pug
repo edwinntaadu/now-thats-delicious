@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  .inner
+    .page-heading
+      .page-heading__copy
+        h1 My reservations
+        p.page-heading__meta Track your table requests.
+
+    if reservations && reservations.length
+      .reviews
+        each reservation in reservations
+          article.review
+            .review__content
+              h2.review__author
+                if reservation.store
+                  a(href=`/stores/${reservation.store.slug}`)= reservation.store.name
+                else
+                  | Store unavailable
+
+              p.review__meta
+                | #{h.moment(reservation.date).format("MMMM D, YYYY")} at #{reservation.time} · #{reservation.partySize} #{reservation.partySize === 1 ? "person" : "people"}
+
+              p
+                strong Status:
+                |  #{reservation.status}
+
+              if reservation.note
+                p= reservation.note
+
+              if reservation.ownerMessage
+                p
+                  strong Message from restaurant:
+                  |  #{reservation.ownerMessage}
+
+              if ["pending", "confirmed"].includes(reservation.status)
+                form(method="POST" action=`/reservations/${reservation._id}/cancel`)
+                  button.button.button--secondary(type="submit") Cancel reservation
+    else
+      .reviews-empty
+        h2 No reservations yet
+        p Your reservation requests will appear here.
+        a.button.button--secondary(href="/stores") Browse stores

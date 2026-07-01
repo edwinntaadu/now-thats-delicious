@@ -2,6 +2,7 @@ extends layout
 
 include mixins/_reviewForm
 include mixins/_review
+include mixins/_reservationForm
 
 block content
   - const reviews = store.reviews || []
@@ -9,6 +10,7 @@ block content
   - const averageRating = ratings.length ? ratings.reduce((total, rating) => total + rating, 0) / ratings.length : 0
   - const coordinates = store.location && store.location.coordinates
   - const mapsUrl = coordinates ? `https://www.google.com/maps/search/?api=1&query=${coordinates[1]},${coordinates[0]}` : null
+  - const isOwner = user && store.author && store.author._id && store.author._id.equals(user._id)
 
   article.single
     .inner
@@ -99,6 +101,26 @@ block content
             alt=`Map showing ${store.location.address}`
             loading="lazy"
           )
+
+      section.single__reservation-section(aria-labelledby="reservation-heading")
+        .single__section-heading
+          .single__section-copy
+            p.single__eyebrow Booking
+            h2#reservation-heading Reserve a table
+
+          if isOwner
+            a.button.button--secondary(href=`/stores/${store._id}/reservations`) Manage reservations
+
+        if user && !isOwner
+          +reservationForm(store)
+        else if isOwner
+          .reviews-empty
+            h3 You manage this store
+            p You can view and respond to reservation requests from the management page.
+        else
+          .review-login
+            p Sign in to request a table at #{store.name}.
+            a.button.button--secondary(href="/login") Log in to reserve
 
       section.single__reviews-section(aria-labelledby="reviews-heading")
         .single__section-heading

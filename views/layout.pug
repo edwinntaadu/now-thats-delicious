@@ -50,6 +50,8 @@ html(lang="en")
                   != h.icon('heart')
                   span Saved
                   span.heart-count= user.hearts && user.hearts.length
+                a.nav__link.nav__link--user(href="/account/reservations", class=(currentPath.startsWith('/account/reservations') ? 'nav__link--active' : ''))
+                  span Reservations
                 a.nav__link.nav__link--user(href="/account", class=(currentPath.startsWith('/account') ? 'nav__link--active' : ''))
                   img.avatar(src=user.gravatar + '&d=retro' alt="")
                   span Account

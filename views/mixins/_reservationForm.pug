@@ -1,0 +1,55 @@
+mixin reservationForm(store)
+  - const today = new Date().toISOString().split("T")[0]
+
+  form.form.reservation-form(method="POST" action=`/stores/${store._id}/reservations`)
+    .form__header
+      p.form__eyebrow Booking
+      h2 Reserve a table
+      p Send a reservation request to #{store.name}.
+
+    .form__grid.form__grid--two
+      .form__field
+        label.form__label(for="reservation-date") Date
+        input.form__input(
+          id="reservation-date"
+          type="date"
+          name="date"
+          min=today
+          required
+        )
+
+      .form__field
+        label.form__label(for="reservation-time") Time
+        select.form__input(
+          id="reservation-time"
+          name="time"
+          required
+        )
+          option(value="") Choose a time
+          each time in ["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00"]
+            option(value=time)= time
+
+    .form__field
+      label.form__label(for="party-size") Party size
+      input.form__input(
+        id="party-size"
+        type="number"
+        name="partySize"
+        min="1"
+        max="20"
+        value="2"
+        required
+      )
+
+    .form__field
+      label.form__label(for="reservation-note") Note
+      textarea.form__textarea(
+        id="reservation-note"
+        name="note"
+        rows="4"
+        maxlength="500"
+        placeholder="Any special requests?"
+      )
+
+    .form__actions
+      button.button.button--primary(type="submit") Request reservation

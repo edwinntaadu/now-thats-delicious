@@ -1,0 +1,63 @@
+extends layout
+
+block content
+  .inner
+    .page-heading
+      .page-heading__copy
+        h1= title
+        p.page-heading__meta Manage table requests for #{store.name}
+
+      a.button.button--secondary(href=`/stores/${store.slug}`) Back to store
+
+    if reservations && reservations.length
+      .reviews
+        each reservation in reservations
+          article.review
+            .review__content
+              h2.review__author= reservation.user ? reservation.user.name : "Guest"
+
+              p.review__meta
+                | #{h.moment(reservation.date).format("MMMM D, YYYY")} at #{reservation.time} · #{reservation.partySize} #{reservation.partySize === 1 ? "person" : "people"}
+
+              p
+                strong Status:
+                |  #{reservation.status}
+
+              if reservation.note
+                p
+                  strong Guest note:
+                  |  #{reservation.note}
+
+              if reservation.ownerMessage
+                p
+                  strong Your message:
+                  |  #{reservation.ownerMessage}
+
+              if reservation.status === "pending"
+                form(method="POST" action=`/reservations/${reservation._id}/confirm`)
+                  .form__field
+                    label.form__label(for=`confirm-message-${reservation._id}`) Optional message
+                    textarea.form__textarea(
+                      id=`confirm-message-${reservation._id}`
+                      name="ownerMessage"
+                      rows="2"
+                      maxlength="500"
+                    )
+                  button.button.button--primary(type="submit") Confirm
+
+                form(method="POST" action=`/reservations/${reservation._id}/decline`)
+                  button.button.button--secondary(type="submit") Decline
+
+              if reservation.status === "confirmed"
+                form(method="POST" action=`/reservations/${reservation._id}/complete`)
+                  button.button.button--primary(type="submit") Mark completed
+
+                form(method="POST" action=`/reservations/${reservation._id}/no-show`)
+                  button.button.button--secondary(type="submit") Mark no-show
+
+                form(method="POST" action=`/reservations/${reservation._id}/cancel`)
+                  button.button.button--secondary(type="submit") Cancel
+    else
+      .reviews-empty
+        h2 No reservation requests yet
+        p New table requests for this store will appear here.
