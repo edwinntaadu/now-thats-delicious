@@ -1,0 +1,29 @@
+extends email-layout
+
+block content
+  h2 New Reservation Request
+
+  p Hi #{user.name},
+
+  p #{reservation.user.name} requested a table at #{store.name}.
+
+  p
+    strong Date:
+    |  #{reservationDate}
+
+  p
+    strong Time:
+    |  #{reservation.time}
+
+  p
+    strong Party size:
+    |  #{reservation.partySize}
+
+  if reservation.note
+    p
+      strong Guest note:
+      |  #{reservation.note}
+
+  p You can confirm or decline this request from your reservation management page.
+
+  +button(ownerReservationsUrl, 'Manage reservations →')

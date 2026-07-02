@@ -1,0 +1,31 @@
+extends email-layout
+
+block content
+  h2 Reservation Request Sent
+
+  p Hi #{user.name},
+
+  p Your reservation request for #{store.name} has been sent.
+
+  p
+    strong Date:
+    |  #{reservationDate}
+
+  p
+    strong Time:
+    |  #{reservation.time}
+
+  p
+    strong Party size:
+    |  #{reservation.partySize}
+
+  if reservation.note
+    p
+      strong Your note:
+      |  #{reservation.note}
+
+  p The restaurant owner can confirm or decline your request.
+
+  +button(reservationUrl, 'View my reservations →')
+
+  p If you did not make this request, you can ignore this email or cancel it from your reservations page.

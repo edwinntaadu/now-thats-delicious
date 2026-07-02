@@ -1,0 +1,27 @@
+extends email-layout
+
+block content
+  h2 Reservation #{status}
+
+  p Hi #{user.name},
+
+  p Your reservation at #{store.name} has been marked as #{status}.
+
+  p
+    strong Date:
+    |  #{reservationDate}
+
+  p
+    strong Time:
+    |  #{reservation.time}
+
+  p
+    strong Party size:
+    |  #{reservation.partySize}
+
+  if reservation.ownerMessage
+    p
+      strong Message from the restaurant:
+      |  #{reservation.ownerMessage}
+
+  +button(reservationUrl, 'View my reservations →')

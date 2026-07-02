@@ -1,9 +1,42 @@
 const mongoose = require("mongoose");
+const mail = require("../handlers/mail");
 
 const Reservation = mongoose.model("Reservation");
 const Store = mongoose.model("Store");
 
 const ACTIVE_STATUSES = ["pending", "confirmed"];
+
+function getBaseUrl(req) {
+  return `${req.protocol}://${req.get("host")}`;
+}
+
+function formatReservationDate(date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function getReservationEmailData(req, reservation) {
+  return {
+    reservation,
+    store: reservation.store,
+    reservationDate: formatReservationDate(reservation.date),
+    reservationUrl: `${getBaseUrl(req)}/account/reservations`,
+    ownerReservationsUrl: `${getBaseUrl(req)}/stores/${reservation.store._id}/reservations`,
+    storeUrl: `${getBaseUrl(req)}/stores/${reservation.store.slug}`,
+  };
+}
+
+async function sendReservationEmail(options) {
+  try {
+    await mail.send(options);
+  } catch (error) {
+    console.error("Reservation email failed:", error);
+  }
+}
 
 function redirectBack(req, res, fallback = "/") {
   res.redirect(req.get("Referrer") || fallback);
@@ -61,7 +94,9 @@ function confirmStoreOwner(store, user) {
 }
 
 exports.createReservation = async (req, res) => {
-  const store = await Store.findById(req.params.id).select("name slug author");
+  const store = await Store.findById(req.params.id)
+    .select("name slug author")
+    .populate("author");
 
   if (!store) {
     throw Error("Store not found.");
@@ -96,7 +131,7 @@ exports.createReservation = async (req, res) => {
     return res.redirect(`/stores/${store.slug}`);
   }
 
-  await new Reservation({
+  const reservation = await new Reservation({
     store: store._id,
     user: req.user._id,
     date,
@@ -104,6 +139,25 @@ exports.createReservation = async (req, res) => {
     partySize,
     note: req.body.note,
   }).save();
+
+  await reservation.populate("user");
+  reservation.store = store;
+
+  const emailData = getReservationEmailData(req, reservation);
+
+  await sendReservationEmail({
+    user: reservation.user,
+    subject: `Reservation request sent for ${store.name}`,
+    filename: "reservation-request-received",
+    ...emailData,
+  });
+
+  await sendReservationEmail({
+    user: store.author,
+    subject: `New reservation request for ${store.name}`,
+    filename: "new-reservation-request",
+    ...emailData,
+  });
 
   req.flash("success", `Reservation request sent to ${store.name}.`);
   res.redirect(`/stores/${store.slug}`);
@@ -195,6 +249,16 @@ async function updateReservationStatus(req, res, status) {
   }
 
   await reservation.save();
+
+  const emailData = getReservationEmailData(req, reservation);
+
+  await sendReservationEmail({
+    user: reservation.user,
+    subject: `Reservation ${status} at ${reservation.store.name}`,
+    filename: "reservation-status-update",
+    status,
+    ...emailData,
+  });
 
   req.flash("success", `Reservation marked as ${status}.`);
   redirectBack(req, res);

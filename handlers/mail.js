@@ -27,8 +27,10 @@ exports.send = async (options) => {
   const html = await generateHTML(options.filename, options);
   const text = convert(html);
   const mailOptions = {
-    from: `Lil Saint <noreply@lilsaint.com>`,
-    to: options.user.email,
+    from:
+      process.env.MAIL_FROM ||
+      `Now That's Delicious <noreply@nowthatsdelicious.com>`,
+    to: options.to || options.user.email,
     subject: options.subject,
     html: html,
     text: text,
