@@ -97,6 +97,89 @@ mixin storeForm(store = {})
               span.choice__indicator(aria-hidden="true")
               span= choice
 
+        section.form__section(aria-labelledby="reservation-settings-heading")
+          - const reservationSettings = h.reservationSettings(store)
+          - const unavailableDatesText = reservationSettings.unavailableDates.map(date => h.moment(date).format("YYYY-MM-DD")).join("\n")
+
+          .form__section-heading
+            h2#reservation-settings-heading Reservations
+            p Set when this store accepts table requests.
+
+          .form__grid.form__grid--two
+            .form__field
+              label.form__label(for="accepts-reservations") Accept reservations
+              select.form__input(
+                id="accepts-reservations"
+                name="reservationSettings[acceptsReservations]"
+              )
+                option(value="true" selected=reservationSettings.acceptsReservations) Yes
+                option(value="false" selected=!reservationSettings.acceptsReservations) No
+
+            .form__field
+              label.form__label(for="max-party-size") Max party size
+              input.form__input(
+                id="max-party-size"
+                type="number"
+                name="reservationSettings[maxPartySize]"
+                min="1"
+                max="100"
+                value=reservationSettings.maxPartySize
+                required
+              )
+
+          each hours, index in reservationSettings.openingHours
+            .form__grid.form__grid--four
+              input(
+                type="hidden"
+                name=`reservationSettings[openingHours][${index}][day]`
+                value=hours.day
+              ) 
+
+              .form__field
+                label.form__label(for=`hours-day-${index}`) Day
+                input.form__input(
+                  id=`hours-day-${index}`
+                  type="text"
+                  value=h.daysOfWeek.find(day => day.value === Number(hours.day)).label
+                  disabled
+                )
+
+              .form__field
+                label.form__label(for=`hours-open-${index}`) Opens
+                input.form__input(
+                  id=`hours-open-${index}`
+                  type="time"
+                  name=`reservationSettings[openingHours][${index}][open]`
+                  value=hours.open
+                )
+
+              .form__field
+                label.form__label(for=`hours-close-${index}`) Closes
+                input.form__input(
+                  id=`hours-close-${index}`
+                  type="time"
+                  name=`reservationSettings[openingHours][${index}][close]`
+                  value=hours.close
+                )
+
+              .form__field
+                label.form__label(for=`hours-closed-${index}`) Status
+                select.form__input(
+                  id=`hours-closed-${index}`
+                  name=`reservationSettings[openingHours][${index}][closed]`
+                )
+                  option(value="false" selected=!hours.closed) Open
+                  option(value="true" selected=hours.closed) Closed
+
+          .form__field
+            label.form__label(for="unavailable-dates") Unavailable dates
+            textarea.form__textarea(
+              id="unavailable-dates"
+              name="reservationSettings[unavailableDatesText]"
+              rows="4"
+              placeholder="2026-12-24\n2026-12-25"
+            )= unavailableDatesText
+
     section.form__section(aria-labelledby="store-photo-heading")
       .form__section-heading
         h2#store-photo-heading Photo

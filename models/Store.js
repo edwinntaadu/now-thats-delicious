@@ -38,6 +38,28 @@ const storeSchema = new mongoose.Schema(
         required: "You must supply an address!",
       },
     },
+    reservationSettings: {
+      acceptsReservations: {
+        type: Boolean,
+        default: true,
+      },
+      maxPartySize: {
+        type: Number,
+        default: 20,
+      },
+      openingHours: [
+        {
+          day: Number, // 0 Sunday, 1 Monday, etc.
+          open: String, // "17:00"
+          close: String, // "21:00"
+          closed: {
+            type: Boolean,
+            default: false,
+          },
+        },
+      ],
+      unavailableDates: [Date],
+    },
     photo: String,
     photoPathname: String,
     author: {

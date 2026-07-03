@@ -11,6 +11,7 @@ block content
   - const coordinates = store.location && store.location.coordinates
   - const mapsUrl = coordinates ? `https://www.google.com/maps/search/?api=1&query=${coordinates[1]},${coordinates[0]}` : null
   - const isOwner = user && store.author && store.author._id && store.author._id.equals(user._id)
+  - const acceptsReservations = !store.reservationSettings || store.reservationSettings.acceptsReservations !== false
 
   article.single
     .inner
@@ -111,12 +112,16 @@ block content
           if isOwner
             a.button.button--secondary(href=`/stores/${store._id}/reservations`) Manage reservations
 
-        if user && !isOwner
+        if user && !isOwner && acceptsReservations
           +reservationForm(store)
         else if isOwner
           .reviews-empty
             h3 You manage this store
             p You can view and respond to reservation requests from the management page.
+        else if !acceptsReservations
+          .reviews-empty
+            h3 Reservations are paused
+            p This store is not accepting reservation requests right now.
         else
           .review-login
             p Sign in to request a table at #{store.name}.

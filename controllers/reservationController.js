@@ -4,6 +4,101 @@ const mail = require("../handlers/mail");
 const Reservation = mongoose.model("Reservation");
 const Store = mongoose.model("Store");
 
+const DEFAULT_OPENING_HOURS = [
+  { day: 0, open: "17:00", close: "21:00", closed: false },
+  { day: 1, open: "17:00", close: "21:00", closed: false },
+  { day: 2, open: "17:00", close: "21:00", closed: false },
+  { day: 3, open: "17:00", close: "21:00", closed: false },
+  { day: 4, open: "17:00", close: "21:00", closed: false },
+  { day: 5, open: "17:00", close: "21:00", closed: false },
+  { day: 6, open: "17:00", close: "21:00", closed: false },
+];
+
+function dateKey(date) {
+  return date.toISOString().split("T")[0];
+}
+
+function isSameDate(a, b) {
+  return dateKey(a) === dateKey(b);
+}
+
+function timeToMinutes(time) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+function minutesToTime(totalMinutes) {
+  const hours = String(Math.floor(totalMinutes / 60)).padStart(2, "0");
+  const minutes = String(totalMinutes % 60).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+function getOpeningHoursForDate(store, date) {
+  const settings = store.reservationSettings || {};
+  const openingHours =
+    settings.openingHours && settings.openingHours.length
+      ? settings.openingHours
+      : DEFAULT_OPENING_HOURS;
+
+  const day = date.getDay();
+  return openingHours.find((hours) => Number(hours.day) === day);
+}
+
+function getAvailableTimes(store, date) {
+  const settings = store.reservationSettings || {};
+
+  if (settings.acceptsReservations === false) {
+    return [];
+  }
+
+  const unavailableDates = settings.unavailableDates || [];
+
+  if (
+    unavailableDates.some((unavailableDate) =>
+      isSameDate(unavailableDate, date),
+    )
+  ) {
+    return [];
+  }
+
+  const hours = getOpeningHoursForDate(store, date);
+
+  if (!hours || hours.closed) {
+    return [];
+  }
+
+  const start = timeToMinutes(hours.open);
+  const end = timeToMinutes(hours.close);
+  const slots = [];
+
+  for (let time = start; time < end; time += 30) {
+    slots.push(minutesToTime(time));
+  }
+
+  return slots;
+}
+
+function validateReservationAvailability(store, date, time, partySize) {
+  const settings = store.reservationSettings || {};
+  const maxPartySize = settings.maxPartySize || 20;
+
+  if (settings.acceptsReservations === false) {
+    throw Error("This store is not accepting reservations right now.");
+  }
+
+  if (partySize > maxPartySize) {
+    throw Error(
+      `This store accepts reservations for up to ${maxPartySize} people.`,
+    );
+  }
+
+  const availableTimes = getAvailableTimes(store, date);
+
+  if (!availableTimes.includes(time)) {
+    throw Error("That reservation time is not available.");
+  }
+}
+
 const ACTIVE_STATUSES = ["pending", "confirmed"];
 
 function getBaseUrl(req) {
@@ -95,7 +190,7 @@ function confirmStoreOwner(store, user) {
 
 exports.createReservation = async (req, res) => {
   const store = await Store.findById(req.params.id)
-    .select("name slug author")
+    .select("name slug author reservationSettings")
     .populate("author");
 
   if (!store) {
@@ -114,6 +209,8 @@ exports.createReservation = async (req, res) => {
   if (!time) {
     throw Error("Please choose a reservation time.");
   }
+
+  validateReservationAvailability(store, date, time, partySize);
 
   const existingReservation = await Reservation.findOne({
     store: store._id,

@@ -25,6 +25,44 @@ const multerOptions = {
   },
 };
 
+function toBoolean(value) {
+  return value === true || value === "true" || value === "on";
+}
+
+function normalizeTime(value, fallback) {
+  return value || fallback;
+}
+
+function normalizeUnavailableDates(value = "") {
+  return value
+    .split(/\r?\n|,/)
+    .map((date) => date.trim())
+    .filter(Boolean)
+    .map((date) => new Date(`${date}T12:00:00.000Z`))
+    .filter((date) => !Number.isNaN(date.getTime()));
+}
+
+function normalizeReservationSettings(settings = {}) {
+  const openingHours = Array.isArray(settings.openingHours)
+    ? settings.openingHours
+    : Object.values(settings.openingHours || {});
+
+  return {
+    acceptsReservations: toBoolean(settings.acceptsReservations),
+    maxPartySize: Math.max(
+      1,
+      Math.min(100, Number(settings.maxPartySize) || 20),
+    ),
+    openingHours: openingHours.map((hours) => ({
+      day: Number(hours.day),
+      open: normalizeTime(hours.open, "17:00"),
+      close: normalizeTime(hours.close, "21:00"),
+      closed: toBoolean(hours.closed),
+    })),
+    unavailableDates: normalizeUnavailableDates(settings.unavailableDatesText),
+  };
+}
+
 async function uploadPhoto(buffer) {
   const { put } = await import("@vercel/blob");
   return put(`${PHOTO_UPLOAD_FOLDER}/${randomUUID()}.jpeg`, buffer, {
@@ -35,7 +73,10 @@ async function uploadPhoto(buffer) {
 }
 
 function isBlobUrl(photo) {
-  return typeof photo === "string" && /^https?:\/\/.+vercel-storage\.com\//i.test(photo);
+  return (
+    typeof photo === "string" &&
+    /^https?:\/\/.+vercel-storage\.com\//i.test(photo)
+  );
 }
 
 function normalizeCoordinates(coordinates = []) {
@@ -51,7 +92,8 @@ function normalizeCoordinates(coordinates = []) {
 }
 
 async function deletePhoto(photoPathname, photoUrl) {
-  const photoToDelete = photoPathname || (isBlobUrl(photoUrl) ? photoUrl : null);
+  const photoToDelete =
+    photoPathname || (isBlobUrl(photoUrl) ? photoUrl : null);
   if (!photoToDelete) return;
 
   try {
@@ -97,6 +139,10 @@ exports.resize = async (req, res, next) => {
 // POST add store page
 exports.createStore = async (req, res) => {
   req.body.author = req.user._id;
+  req.body.reservationSettings = normalizeReservationSettings(
+    req.body.reservationSettings,
+  );
+
   const store = await new Store(req.body).save();
   req.flash(
     "success",
@@ -166,13 +212,16 @@ exports.updateStore = async (req, res) => {
   req.body.location.type = "Point";
 
   req.body.location.coordinates =
-    normalizeCoordinates(req.body.location.coordinates)
-    || normalizeCoordinates(previousStore.location?.coordinates);
+    normalizeCoordinates(req.body.location.coordinates) ||
+    normalizeCoordinates(previousStore.location?.coordinates);
 
   if (!req.body.location.address && previousStore.location?.address) {
     req.body.location.address = previousStore.location.address;
   }
 
+  req.body.reservationSettings = normalizeReservationSettings(
+    req.body.reservationSettings,
+  );
   // 1. Find and updare the store
   let store;
   try {
